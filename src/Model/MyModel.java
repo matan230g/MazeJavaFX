@@ -2,6 +2,7 @@ package Model;
 
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
+import algorithms.mazeGenerators.Position;
 import javafx.scene.input.KeyCode;
 
 import java.util.Observable;
@@ -88,26 +89,32 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void moveCharacter(KeyCode movement) {
+        int newRow = characterPositionRow;
+        int newCol = characterPositionColumn;
+
         switch (movement) {
             case UP:
-                characterPositionRow--;
+                newRow--;
                 break;
             case DOWN:
-                characterPositionRow++;
+                newRow++;
                 break;
             case RIGHT:
-                characterPositionColumn++;
+                newCol++;
                 break;
             case LEFT:
-                characterPositionColumn--;
+                newCol--;
                 break;
             case HOME:
-                characterPositionRow = 0;
-                characterPositionColumn = 0;
+                newRow = 0;
+                newCol = 0;
         }
-        setChanged();
-        notifyObservers(/*Can forward an Object*/);
-    }
-    //</editor-fold>
+        if(maze.checkIfPositionValid(new Position(newRow,newCol), Maze.EMPTY_TILE)) {
+            characterPositionRow = newRow;
+            characterPositionColumn = newCol;
 
+            setChanged();
+            notifyObservers();
+        }
+    }
 }
