@@ -18,8 +18,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
-import org.omg.PortableInterceptor.ACTIVE;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -120,11 +118,11 @@ public class MyViewController implements Observer, IView {
     }
 
     public void generateMaze(ActionEvent event) {
-        int heigth = Integer.valueOf(txtfld_rowsNum.getText());
-        int width = Integer.valueOf(txtfld_columnsNum.getText());
+        int rows = Integer.valueOf(txtfld_rowsNum.getText());
+        int cols = Integer.valueOf(txtfld_columnsNum.getText());
         btn_generateMaze.setDisable(true);
         btn_solveMaze.setDisable(true);
-        viewModel.generateMaze(width, heigth);
+        viewModel.generateMaze(rows, cols);
 
         mazeDisplayer.requestFocus();
     }

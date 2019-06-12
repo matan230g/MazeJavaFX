@@ -83,18 +83,18 @@ public class MyModel extends Observable implements IModel {
 
     //<editor-fold desc="Model Functionality">
     @Override
-    public void generateMaze(int width, int height) {
+    public void generateMaze(int rows, int cols) {
         //Generate maze
         threadPool.execute(() -> {
             try {
                 Thread.sleep(1000);
-                maze = generateRandomMaze(width, height);
+                maze = generateRandomMaze(rows, cols);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             setChanged(); //Raise a flag that I have changed
             notifyObservers(maze); //Wave the flag so the observers will notice
-        });
+    });
     }
 
     @Override
@@ -122,7 +122,6 @@ public class MyModel extends Observable implements IModel {
         if (maze.checkIfPositionValid(new Position(newRow, newCol), Maze.EMPTY_TILE)) {
             characterPositionRow = newRow;
             characterPositionColumn = newCol;
-
             setChanged();
             notifyObservers();
         }

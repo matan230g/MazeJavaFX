@@ -16,8 +16,8 @@ public class MazeDisplayer extends Canvas {
     private int[][] maze;
     private int characterPositionRow = 0;
     private int characterPositionColumn = 0;
-    private int goalPositonRow;
-    private int goalPositonColumn;
+    private int goalPositionRow;
+    private int goalPositionColumn;
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
@@ -30,8 +30,8 @@ public class MazeDisplayer extends Canvas {
         redraw();
     }
     public void setGoalPosition(int row, int column) {
-        goalPositonRow = row;
-        goalPositonColumn = column;
+        goalPositionRow = row;
+        goalPositionColumn = column;
         redraw();
     }
 
@@ -55,7 +55,7 @@ public class MazeDisplayer extends Canvas {
                     for (int j = 0; j < maze[i].length; j++) {
                         if (maze[i][j] == 1) {
                             //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
-                            gc.drawImage(wallImage, i * cellHeight, j * cellWidth, cellHeight, cellWidth);
+                            gc.drawImage(wallImage, j * cellWidth, i * cellHeight, cellWidth,cellHeight);
                         }
                     }
                 }
@@ -63,8 +63,8 @@ public class MazeDisplayer extends Canvas {
                 //Draw Character
                 //gc.setFill(Color.RED);
                 //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
-                gc.drawImage(goalImage,goalPositonColumn*cellHeight,goalPositonRow*cellHeight,cellHeight,cellWidth);
-                gc.drawImage(characterImage, characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
+                gc.drawImage(goalImage,goalPositionColumn*cellWidth,goalPositionRow*cellHeight,cellWidth,cellHeight);
+                gc.drawImage(characterImage, characterPositionColumn * cellWidth, characterPositionRow * cellHeight, cellWidth,cellHeight);
             } catch (FileNotFoundException e) {
                 //e.printStackTrace();
             }
