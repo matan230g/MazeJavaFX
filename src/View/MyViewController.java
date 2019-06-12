@@ -131,6 +131,10 @@ public class MyViewController implements Observer, IView {
         viewModel.moveCharacter(keyEvent.getCode());
         keyEvent.consume();
     }
+    public void change(KeyEvent e){
+        mazeDisplayer.changeSize();
+
+    }
 
     public void shutDown() {
 

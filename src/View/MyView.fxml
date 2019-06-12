@@ -15,7 +15,7 @@
 
 <BorderPane fx:id="board" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <center>
-         <MazeDisplayer fx:id="mazeDisplayer" height="450.0" imageFileNameCharacter="resources/Images/dave.png" imageFileNameGoal="resources/Images/door.png" imageFileNameWall="resources/Images/redTile.png" width="380.0" BorderPane.alignment="CENTER" />
+         <MazeDisplayer fx:id="mazeDisplayer" height="450.0" imageFileNameCharacter="resources/Images/dave.png" imageFileNameGoal="resources/Images/door.png" imageFileNameWall="resources/Images/redTile.png" width="445.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <MenuBar BorderPane.alignment="CENTER">

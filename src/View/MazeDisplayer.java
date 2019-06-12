@@ -99,4 +99,8 @@ public class MazeDisplayer extends Canvas {
     }
     //endregion
 
+    public void changeSize(){
+        this.setScaleX(150);
+        this.setScaleY(150);
+    }
 }
