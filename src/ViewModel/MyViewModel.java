@@ -2,6 +2,7 @@ package ViewModel;
 
 import Model.IModel;
 import javafx.scene.input.KeyCode;
+
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,27 +13,30 @@ public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
 
-    public MyViewModel(IModel model){
+    public MyViewModel(IModel model) {
         this.model = model;
     }
 
 
     @Override
     public void update(Observable o, Object arg) {
-        if (o==model){
+        if (o == model) {
             //Notify my observer (View) that I have changed
             setChanged();
             notifyObservers();
         }
     }
 
+    public void generateMaze(int rows, int cols) {
+        if (rows % 2 == 0)
+            rows--;
+        if (cols % 2 == 0)
+            cols--;
 
-
-    public void generateMaze(int rows, int cols){
         model.generateMaze(rows, cols);
     }
 
-    public void moveCharacter(KeyCode movement){
+    public void moveCharacter(KeyCode movement) {
         model.moveCharacter(movement);
     }
     //</editor-fold>
@@ -60,6 +64,8 @@ public class MyViewModel extends Observable implements Observer {
         return model.getGoalPositionColumn();
     }
 
-
+    public boolean isFinished() {
+        return model.isFinished();
+    }
 
 }
