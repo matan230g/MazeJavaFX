@@ -1,10 +1,19 @@
 package Model;
 
+import Client.Client;
+import Client.IClientStrategy;
+import Server.ServerStrategyGenerateMaze;
+import Server.ServerStrategySolveSearchProblem;
+import IO.MyDecompressorInputStream;
+import Server.Server;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.Position;
 import javafx.scene.input.KeyCode;
 
+import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Observable;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +29,10 @@ public class MyModel extends Observable implements IModel {
 
 
     public void startServers() {
-
+        Server mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        Server solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
+        solveSearchProblemServer.start();
+        mazeGeneratingServer.start();
     }
 
     public void stopServers() {
@@ -84,17 +96,46 @@ public class MyModel extends Observable implements IModel {
     //<editor-fold desc="Model Functionality">
     @Override
     public void generateMaze(int rows, int cols) {
-        //Generate maze
-        threadPool.execute(() -> {
-            try {
-                Thread.sleep(1000);
-                maze = generateRandomMaze(rows, cols);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            setChanged(); //Raise a flag that I have changed
-            notifyObservers(maze); //Wave the flag so the observers will notice
-    });
+        try {
+            Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
+                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                    try {
+                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
+                        int[] mazeDimensions = new int[]{rows, cols};
+                        toServer.writeObject(mazeDimensions);
+                        toServer.flush();
+                        byte[] compressedMaze = (byte[])((byte[])fromServer.readObject());
+                        InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+                        byte[] decompressedMaze = new byte[3000];
+                        is.read(decompressedMaze);
+                        maze = new Maze(decompressedMaze);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    setChanged(); //Raise a flag that I have changed
+                    notifyObservers(maze); //Wave the flag so the observers will notice
+                }
+            });
+            client.communicateWithServer();
+        } catch (UnknownHostException e2) {
+            e2.printStackTrace();
+        }
+
+
+
+//
+//        //Generate maze
+//        threadPool.execute(() -> {
+//            try {
+//                Thread.sleep(1000);
+//                maze = generateRandomMaze(rows, cols);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//    });
     }
 
     @Override
