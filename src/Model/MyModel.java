@@ -27,16 +27,18 @@ public class MyModel extends Observable implements IModel {
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();
 
-
+    Server mazeGeneratingServer;
+    Server solveSearchProblemServer;
     public void startServers() {
-        Server mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
-        Server solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
+        mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
+        solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
         solveSearchProblemServer.start();
         mazeGeneratingServer.start();
     }
 
     public void stopServers() {
-
+        solveSearchProblemServer.stop();
+        mazeGeneratingServer.stop();
     }
 
     private Maze maze;
@@ -44,17 +46,6 @@ public class MyModel extends Observable implements IModel {
     private int characterPositionColumn;
     private int goalPositionRow;
     private int goalPositionColumn;
-
-
-    private Maze generateRandomMaze(int width, int height) {
-        MyMazeGenerator mg = new MyMazeGenerator();
-        maze = mg.generate(width, height);
-        characterPositionColumn = maze.getStartPosition().getColumnIndex();
-        characterPositionRow = maze.getStartPosition().getRowIndex();
-        goalPositionRow = maze.getGoalPosition().getRowIndex();
-        goalPositionColumn = maze.getGoalPosition().getColumnIndex();
-        return maze;
-    }
 
     @Override
     public int[][] getMaze() {
@@ -83,6 +74,11 @@ public class MyModel extends Observable implements IModel {
     }
 
     @Override
+    public boolean isFinished() {
+        return characterPositionColumn == goalPositionColumn && characterPositionRow == goalPositionRow;
+    }
+
+    @Override
     public void close() {
         try {
             threadPool.shutdown();
@@ -91,9 +87,7 @@ public class MyModel extends Observable implements IModel {
             //e.printStackTrace();
         }
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Model Functionality">
     @Override
     public void generateMaze(int rows, int cols) {
         try {
@@ -106,7 +100,7 @@ public class MyModel extends Observable implements IModel {
                         int[] mazeDimensions = new int[]{rows, cols};
                         toServer.writeObject(mazeDimensions);
                         toServer.flush();
-                        byte[] compressedMaze = (byte[])((byte[])fromServer.readObject());
+                        byte[] compressedMaze = (byte[]) fromServer.readObject();
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
                         byte[] decompressedMaze = new byte[3000];
                         is.read(decompressedMaze);
@@ -123,19 +117,6 @@ public class MyModel extends Observable implements IModel {
         } catch (UnknownHostException e2) {
             e2.printStackTrace();
         }
-
-
-
-//
-//        //Generate maze
-//        threadPool.execute(() -> {
-//            try {
-//                Thread.sleep(1000);
-//                maze = generateRandomMaze(rows, cols);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//    });
     }
 
     @Override

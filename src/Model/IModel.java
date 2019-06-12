@@ -16,6 +16,7 @@ public interface IModel {
     int getGoalPositionRow();
     int getGoalPositionColumn();
 
+    boolean isFinished();
 
 
 }
