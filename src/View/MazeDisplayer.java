@@ -14,8 +14,8 @@ import java.io.FileNotFoundException;
 public class MazeDisplayer extends Canvas {
 
     private int[][] maze;
-    private int characterPositionRow = 1;
-    private int characterPositionColumn = 1;
+    private int characterPositionRow = 0;
+    private int characterPositionColumn = 0;
     private int goalPositonRow;
     private int goalPositonColumn;
 

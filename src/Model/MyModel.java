@@ -1,5 +1,7 @@
 package Model;
 
+import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.MyMazeGenerator;
 import javafx.scene.input.KeyCode;
 
 import java.util.Observable;
@@ -45,13 +47,9 @@ public class MyModel extends Observable implements IModel {
     };
 
     private int[][] generateRandomMaze(int width, int height) {
-        Random rand = new Random();
-        maze = new int[width][height];
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                maze[i][j] = Math.abs(rand.nextInt() % 2);
-            }
-        }
+        MyMazeGenerator mg=new MyMazeGenerator();
+        Maze m=mg.generate(width,height);
+
         return maze;
     }
     //</editor-fold>

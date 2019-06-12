@@ -118,9 +118,7 @@ public class MyViewController implements Observer,IView{
     }
 
 
+    public void shutDown() {
 
-
-
-
-
+    }
 }
