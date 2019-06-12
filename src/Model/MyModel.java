@@ -9,11 +9,15 @@ import Server.Server;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.AState;
+import algorithms.search.Solution;
 import javafx.scene.input.KeyCode;
+import test.RunCommunicateWithServers;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -117,6 +121,40 @@ public class MyModel extends Observable implements IModel {
         } catch (UnknownHostException e2) {
             e2.printStackTrace();
         }
+    }
+    ArrayList<AState> mazeSolutionSteps = null;
+    @Override
+    public void solveMaze() {
+        try {
+            Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
+                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                    try {
+                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
+                        maze.setStartPosition(new Position(characterPositionRow,characterPositionColumn));
+                        toServer.writeObject(maze);
+                        toServer.flush();
+                        Solution mazeSolution = (Solution)fromServer.readObject();
+                        System.out.println(String.format("Solution steps: %s", mazeSolution));
+                        mazeSolutionSteps = mazeSolution.getSolutionPath();
+
+                        setChanged();
+                        notifyObservers();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            client.communicateWithServer();
+        } catch (UnknownHostException e2) {
+            e2.printStackTrace();
+        }
+    }
+
+    @Override
+    public ArrayList<AState> getSolution() {
+        return mazeSolutionSteps;
     }
 
     @Override
