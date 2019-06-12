@@ -52,4 +52,14 @@ public class MyViewModel extends Observable implements Observer {
         return model.getCharacterPositionColumn();
     }
 
+    public int getGoalPositionRow() {
+        return model.getGoalPositionRow();
+    }
+
+    public int getGoalPositionColumn() {
+        return model.getGoalPositionColumn();
+    }
+
+
+
 }

@@ -26,6 +26,7 @@ public class MyModel extends Observable implements IModel {
     public void stopServers() {
 
     }
+
     private Maze maze;
     private int characterPositionRow;
     private int characterPositionColumn;
@@ -33,15 +34,13 @@ public class MyModel extends Observable implements IModel {
     private int goalPositionColumn;
 
 
-
     private Maze generateRandomMaze(int width, int height) {
-        MyMazeGenerator mg=new MyMazeGenerator();
-         maze=mg.generate(width,height);
-         characterPositionColumn=maze.getStartPosition().getColumnIndex();
-         characterPositionRow=maze.getStartPosition().getRowIndex();
-         goalPositionRow=maze.getGoalPosition().getRowIndex();
-         goalPositionColumn=maze.getGoalPosition().getColumnIndex();
-
+        MyMazeGenerator mg = new MyMazeGenerator();
+        maze = mg.generate(width, height);
+        characterPositionColumn = maze.getStartPosition().getColumnIndex();
+        characterPositionRow = maze.getStartPosition().getRowIndex();
+        goalPositionRow = maze.getGoalPosition().getRowIndex();
+        goalPositionColumn = maze.getGoalPosition().getColumnIndex();
         return maze;
     }
 
@@ -58,6 +57,17 @@ public class MyModel extends Observable implements IModel {
     @Override
     public int getCharacterPositionColumn() {
         return characterPositionColumn;
+    }
+
+
+    @Override
+    public int getGoalPositionRow() {
+        return maze.getGoalPosition().getRowIndex();
+    }
+
+    @Override
+    public int getGoalPositionColumn() {
+        return maze.getGoalPosition().getColumnIndex();
     }
 
     @Override
@@ -78,7 +88,7 @@ public class MyModel extends Observable implements IModel {
         threadPool.execute(() -> {
             try {
                 Thread.sleep(1000);
-                maze = generateRandomMaze(width,height);
+                maze = generateRandomMaze(width, height);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -109,7 +119,7 @@ public class MyModel extends Observable implements IModel {
                 newRow = 0;
                 newCol = 0;
         }
-        if(maze.checkIfPositionValid(new Position(newRow,newCol), Maze.EMPTY_TILE)) {
+        if (maze.checkIfPositionValid(new Position(newRow, newCol), Maze.EMPTY_TILE)) {
             characterPositionRow = newRow;
             characterPositionColumn = newCol;
 

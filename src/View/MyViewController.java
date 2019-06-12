@@ -49,14 +49,14 @@ public class MyViewController implements Observer, IView {
         this.viewModel = viewModel;
         this.mainScene = mainScene;
         this.mainStage = mainStage;
-         //bindProperties();
+        //bindProperties();
         //setResizeEvent();
     }
 
 
     public void update(Observable o, Object arg) {
         if (o == viewModel) {
-            displayMaze(viewModel.getMaze());
+            displayMaze(viewModel.getMaze(), viewModel.getGoalPositionRow(), viewModel.getGoalPositionColumn());
             btn_generateMaze.setDisable(false);
         }
     }
@@ -73,8 +73,9 @@ public class MyViewController implements Observer, IView {
         });
     }
 
-    public void displayMaze(int[][] maze) {
+    public void displayMaze(int[][] maze, int goalRow, int goalCol) {
         mazeDisplayer.setMaze(maze);
+        mazeDisplayer.setGoalPosition(goalRow, goalCol);
         int characterPositionRow = viewModel.getCharacterPositionRow();
         int characterPositionColumn = viewModel.getCharacterPositionColumn();
         mazeDisplayer.setCharacterPosition(characterPositionRow, characterPositionColumn);

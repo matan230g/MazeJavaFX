@@ -13,6 +13,8 @@ public interface IModel {
     int getCharacterPositionRow();
     int getCharacterPositionColumn();
 
+    int getGoalPositionRow();
+    int getGoalPositionColumn();
 
 
 
