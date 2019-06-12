@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,7 +24,7 @@ import org.omg.PortableInterceptor.ACTIVE;
 import java.util.Observable;
 import java.util.Observer;
 
-public class MyViewController implements Observer,IView{
+public class MyViewController implements Observer, IView {
     //Controls
     public MazeDisplayer mazeDisplayer;
     public javafx.scene.control.TextField txtfld_rowsNum;
@@ -36,6 +37,8 @@ public class MyViewController implements Observer,IView{
     //Properties - For Binding
     public StringProperty characterPositionRow = new SimpleStringProperty("1");
     public StringProperty characterPositionColumn = new SimpleStringProperty("1");
+    public StringProperty goalPositionColumn = new SimpleStringProperty("1");
+    public StringProperty goalPositionRow = new SimpleStringProperty("1");
 
     @FXML
     private MyViewModel viewModel;
@@ -46,11 +49,9 @@ public class MyViewController implements Observer,IView{
         this.viewModel = viewModel;
         this.mainScene = mainScene;
         this.mainStage = mainStage;
-       // bindProperties();
+         //bindProperties();
         //setResizeEvent();
     }
-
-
 
 
     public void update(Observable o, Object arg) {
@@ -59,6 +60,7 @@ public class MyViewController implements Observer,IView{
             btn_generateMaze.setDisable(false);
         }
     }
+
     public void setResizeEvent() {
         this.mainScene.widthProperty().addListener((observable, oldValue, newValue) -> {
             //mazeDisplayer.redraw();
@@ -70,6 +72,7 @@ public class MyViewController implements Observer,IView{
             System.out.println("Height: " + newValue);
         });
     }
+
     public void displayMaze(int[][] maze) {
         mazeDisplayer.setMaze(maze);
         int characterPositionRow = viewModel.getCharacterPositionRow();
@@ -81,42 +84,54 @@ public class MyViewController implements Observer,IView{
     }
 
     @FXML
-    public void handleCloseButtonAction(ActionEvent event)throws Exception  {
+    public void handleCloseButtonAction(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("exitBox.fxml"));
-        Stage box=new Stage();
+        Stage box = new Stage();
         box.setScene(new Scene(root, 500, 300));
         box.initModality(Modality.APPLICATION_MODAL);
         box.initStyle(StageStyle.UNDECORATED);
         box.show();
     }
-    public void close(ActionEvent event){
+
+    public void close(ActionEvent event) {
         Platform.exit();
     }
-    public void stay(ActionEvent event){
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+    public void stay(ActionEvent event) {
+        Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
         window.close();
         // do what you have to do
     }
-    public void about(ActionEvent event)throws Exception{
+
+    public void about(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("aboutBox.fxml"));
-        Stage box=new Stage();
+        Stage box = new Stage();
         box.setScene(new Scene(root, 500, 300));
         box.initModality(Modality.APPLICATION_MODAL);
         box.initStyle(StageStyle.UNDECORATED);
         box.show();
     }
+
     private void bindProperties() {
         lbl_rowsNum.textProperty().bind(this.characterPositionRow);
         lbl_columnsNum.textProperty().bind(this.characterPositionColumn);
+
     }
-    public void generateMaze(ActionEvent event){
+
+    public void generateMaze(ActionEvent event) {
         int heigth = Integer.valueOf(txtfld_rowsNum.getText());
         int width = Integer.valueOf(txtfld_columnsNum.getText());
         btn_generateMaze.setDisable(true);
         btn_solveMaze.setDisable(true);
         viewModel.generateMaze(width, heigth);
+
+        mazeDisplayer.requestFocus();
     }
 
+    public void onKeyPressed(KeyEvent keyEvent) {
+        viewModel.moveCharacter(keyEvent.getCode());
+        keyEvent.consume();
+    }
 
     public void shutDown() {
 

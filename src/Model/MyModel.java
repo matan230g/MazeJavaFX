@@ -17,7 +17,7 @@ public class MyModel extends Observable implements IModel {
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();
 
-    //<editor-fold desc="Servers">
+
     public void startServers() {
 
     }
@@ -25,39 +25,28 @@ public class MyModel extends Observable implements IModel {
     public void stopServers() {
 
     }
-    //</editor-fold>
+    private Maze maze;
+    private int characterPositionRow;
+    private int characterPositionColumn;
+    private int goalPositionRow;
+    private int goalPositionColumn;
 
-    //<editor-fold desc="Character">
-    private int characterPositionRow = 1;
-    private int characterPositionColumn = 1;
-    //</editor-fold>
 
-    //<editor-fold desc="Maze">
-    private int[][] maze = { // a stub...
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1},
-            {0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1},
-            {1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1},
-            {1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1},
-            {1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1},
-            {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1},
-            {1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1}
-    };
 
-    private int[][] generateRandomMaze(int width, int height) {
+    private Maze generateRandomMaze(int width, int height) {
         MyMazeGenerator mg=new MyMazeGenerator();
-        Maze m=mg.generate(width,height);
+         maze=mg.generate(width,height);
+         characterPositionColumn=maze.getStartPosition().getColumnIndex();
+         characterPositionRow=maze.getStartPosition().getRowIndex();
+         goalPositionRow=maze.getGoalPosition().getRowIndex();
+         goalPositionColumn=maze.getGoalPosition().getColumnIndex();
 
         return maze;
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Getters">
     @Override
     public int[][] getMaze() {
-        return maze;
+        return maze.getMazeMatrix();
     }
 
     @Override
