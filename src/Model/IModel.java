@@ -1,7 +1,9 @@
 package Model;
 
+import algorithms.search.AState;
 import javafx.scene.input.KeyCode;
 
+import java.util.ArrayList;
 
 
 public interface IModel {
@@ -18,5 +20,6 @@ public interface IModel {
 
     boolean isFinished();
 
-
+    void solveMaze();
+    ArrayList<AState> getSolution();
 }

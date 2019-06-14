@@ -1,8 +1,10 @@
 package ViewModel;
 
 import Model.IModel;
+import algorithms.search.AState;
 import javafx.scene.input.KeyCode;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -34,6 +36,13 @@ public class MyViewModel extends Observable implements Observer {
             cols--;
 
         model.generateMaze(rows, cols);
+    }
+
+    public void solveMaze() {
+        model.solveMaze();
+    }
+    public ArrayList<AState> getSolution() {
+        return model.getSolution();
     }
 
     public void moveCharacter(KeyCode movement) {
