@@ -21,9 +21,13 @@
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
     -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em;
 }
-.aboutbox {
+.popBox {
     -fx-border-color: white;
     -fx-border-style: solid;
+}
+.Label {
+    -fx-text-fill: white;
+
 }
 .button{
     -fx-background-color:

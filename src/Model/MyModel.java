@@ -48,8 +48,6 @@ public class MyModel extends Observable implements IModel {
     private Maze maze;
     private int characterPositionRow;
     private int characterPositionColumn;
-    private int goalPositionRow;
-    private int goalPositionColumn;
 
     @Override
     public int[][] getMaze() {
@@ -79,7 +77,7 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public boolean isFinished() {
-        return characterPositionColumn == goalPositionColumn && characterPositionRow == goalPositionRow;
+        return characterPositionColumn == maze.getGoalPosition().getColumnIndex() && characterPositionRow == maze.getGoalPosition().getRowIndex();
     }
 
     @Override
