@@ -15,6 +15,7 @@ import java.util.Observer;
 public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
+    private boolean isCtrlPressed = false;
 
     public MyViewModel(IModel model) {
         this.model = model;
@@ -48,9 +49,14 @@ public class MyViewModel extends Observable implements Observer {
     public ArrayList<AState> getSolution() {
         return model.getSolution();
     }
-
-    public void moveCharacter(KeyCode movement) {
-        model.moveCharacter(movement);
+    public void keyPressed(KeyCode code) {
+        model.moveCharacter(code);
+        if(code == KeyCode.CONTROL)
+            isCtrlPressed = true;
+    }
+    public void keyReleased(KeyCode code) {
+        if(code == KeyCode.CONTROL)
+            isCtrlPressed = false;
     }
     //</editor-fold>
 
@@ -98,5 +104,9 @@ public class MyViewModel extends Observable implements Observer {
      */
     public int getCharacterDirection() {
         return model.getCharacterDirection();
+    }
+
+    public boolean isCtrlPressed() {
+        return isCtrlPressed;
     }
 }
