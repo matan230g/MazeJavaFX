@@ -30,13 +30,16 @@ public class MyViewModel extends Observable implements Observer {
         }
     }
 
-    public void generateMaze(int rows, int cols) {
+    public boolean generateMaze(int rows, int cols) {
+        if(rows<3 ||cols<3||rows>100||cols>100)
+            return false;
         if (rows % 2 == 0)
             rows--;
         if (cols % 2 == 0)
             cols--;
 
         model.generateMaze(rows, cols);
+        return true;
     }
 
     public void solveMaze() {

@@ -7,6 +7,8 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.input.KeyEvent;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -62,7 +65,7 @@ public class MyViewController implements Observer, IView {
         this.viewModel = viewModel;
         this.mainScene = mainScene;
         this.mainStage = mainStage;
-        //bindProperties();
+        bindProperties();
         //setResizeEvent();
     }
 
@@ -171,33 +174,61 @@ public class MyViewController implements Observer, IView {
         box.show();
 
     }
+    private boolean validCols = true, validRows = true;
 
     private void bindProperties() {
-        lbl_rowsNum.textProperty().bind(this.characterPositionRow);
-        lbl_columnsNum.textProperty().bind(this.characterPositionColumn);
+//        lbl_rowsNum.textProperty().bind(this.characterPositionRow);
+//        lbl_columnsNum.textProperty().bind(this.characterPositionColumn);
 
+        txtfld_columnsNum.textProperty().addListener((observable, oldValue, newValue) -> {
+            validCols = newValue.length() > 0;
+            btn_generateMaze.setDisable(!validRows || !validCols);
+        });
+
+        txtfld_rowsNum.textProperty().addListener((observable, oldValue, newValue) -> {
+            validRows = newValue.length() > 0;
+            btn_generateMaze.setDisable(!validRows || !validCols);
+        });
     }
 
     public void generateMaze(ActionEvent event) {
-        int rows = Integer.valueOf(txtfld_rowsNum.getText());
-        int cols = Integer.valueOf(txtfld_columnsNum.getText());
-        btn_generateMaze.setDisable(true);
-        btn_solveMaze.setDisable(true);
-        viewModel.generateMaze(rows, cols);
+        int rows = 0;
+        int cols = 0;
+        try {
+            rows = Integer.valueOf(txtfld_rowsNum.getText());
+            cols = Integer.valueOf(txtfld_columnsNum.getText());
+        } catch (NumberFormatException e) {
+            // TODO log
+        }
 
-        mazeDisplayer.requestFocus();
+        if(viewModel.generateMaze(rows, cols)){
+           btn_generateMaze.setDisable(true);
+           btn_solveMaze.setDisable(true);
+           mazeDisplayer.requestFocus();}
+       else{
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           alert.initStyle(StageStyle.UNDECORATED);
+           alert.setContentText("Wrong input, maze size between 3 to 100");
+           DialogPane dialogPane = alert.getDialogPane();
+           dialogPane.getStylesheets().add(
+                   getClass().getResource("MainStyle.css").toExternalForm());
+           dialogPane.getStyleClass().add("myDialog");
+           alert.showAndWait();
+
+
+       }
+
     }
+    public void mouseTest(MouseEvent mouseEvent){
 
+    }
     public void onKeyPressed(KeyEvent keyEvent) {
         viewModel.moveCharacter(keyEvent.getCode());
         ArrayList<AState> solution = viewModel.getSolution();
         mazeDisplayer.setSolution(solution);
         keyEvent.consume();
     }
-    public void change(KeyEvent e){
-        mazeDisplayer.changeSize();
 
-    }
     public void solveMaze(ActionEvent event){
         if(viewModel.getSolution() != null){
             viewModel.resetSolution();
