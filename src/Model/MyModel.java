@@ -2,6 +2,7 @@ package Model;
 
 import Client.Client;
 import Client.IClientStrategy;
+import IO.MyCompressorOutputStream;
 import Server.ServerStrategyGenerateMaze;
 import Server.ServerStrategySolveSearchProblem;
 import IO.MyDecompressorInputStream;
@@ -11,6 +12,7 @@ import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import algorithms.search.Solution;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import test.RunCommunicateWithServers;
 
@@ -18,6 +20,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -82,12 +85,13 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void close() {
-        try {
-            threadPool.shutdown();
-            threadPool.awaitTermination(3, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            //e.printStackTrace();
-        }
+        System.out.println("exit preforme");
+        stopServers();
+        threadPool.shutdown();
+//        setChanged();
+//        notifyObservers();
+        Platform.exit();
+
     }
 
     @Override
@@ -104,9 +108,12 @@ public class MyModel extends Observable implements IModel {
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject();
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[3000];
+                        byte[] decompressedMaze = new byte[rows*cols+100];
                         is.read(decompressedMaze);
                         maze = new Maze(decompressedMaze);
+                        characterPositionColumn=maze.getStartPosition().getColumnIndex();
+                        characterPositionRow=maze.getStartPosition().getRowIndex();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -183,5 +190,37 @@ public class MyModel extends Observable implements IModel {
             setChanged();
             notifyObservers();
         }
+    }
+
+    @Override
+    public void openFile(File file) {
+        byte[] savedMazeBytes=new byte[10000];
+        try {
+            FileInputStream loadFile = new FileInputStream(file);
+            InputStream in= new MyDecompressorInputStream(loadFile);
+            in.read(savedMazeBytes);
+            in.close();
+            maze=new Maze(savedMazeBytes);
+            characterPositionColumn=maze.getStartPosition().getColumnIndex();
+            characterPositionRow=maze.getStartPosition().getRowIndex();
+            setChanged();
+            notifyObservers();
+        } catch (IOException var7) {
+            var7.printStackTrace();
+        }
+
+
+    }
+    @Override
+    public void saveMaze(String path){
+        try {
+            OutputStream out = new MyCompressorOutputStream(new FileOutputStream(path));
+            out.write(maze.toByteArray());
+            out.flush();
+            out.close();
+        } catch (IOException var8) {
+            var8.printStackTrace();
+        }
+
     }
 }
