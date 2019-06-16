@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="401.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@MainStyle.css" styleClass="popBox" fx:controller="View.proControl">
+<AnchorPane prefHeight="401.0" prefWidth="602.0" styleClass="popBox" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.proControl">
    <children>
-      <Button fx:id="cancel" layoutX="502.0" layoutY="324.0" mnemonicParsing="false" text="Cancel"  />
-      <Button fx:id="apply" layoutX="31.0" layoutY="324.0" mnemonicParsing="false" text="Apply"  />
+      <Button fx:id="cancel" layoutX="502.0" layoutY="324.0" mnemonicParsing="false" text="Cancel" />
+      <Button fx:id="apply" layoutX="31.0" layoutY="324.0" mnemonicParsing="false" text="Apply" />
       <ComboBox fx:id="generatingAlgorithm" layoutX="277.0" layoutY="45.0" prefHeight="39.0" prefWidth="302.0" />
       <Label layoutX="31.0" layoutY="51.0" styleClass="Label" text="Maze Generator" />
       <Label layoutX="31.0" layoutY="99.0" prefHeight="27.0" prefWidth="160.0" styleClass="Label" text="Solving Algorithm" />
       <ComboBox fx:id="searchingAlgorithm" layoutX="277.0" layoutY="93.0" prefHeight="39.0" prefWidth="302.0" />
+      <CheckBox fx:id="muteBox" layoutX="486.0" layoutY="247.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="85.0" text="mute" textFill="WHITE" />
    </children>
 </AnchorPane>

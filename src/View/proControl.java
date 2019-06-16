@@ -1,6 +1,8 @@
 package View;
 
 import Server.Configurations;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -8,15 +10,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Window;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
 public class proControl implements Initializable {
@@ -24,6 +28,8 @@ public class proControl implements Initializable {
     ComboBox<String> generatingAlgorithm;
     @FXML
     ComboBox<String> searchingAlgorithm;
+    @FXML
+    CheckBox muteBox;
     @FXML
     Button apply;
     @FXML
@@ -34,8 +40,11 @@ public class proControl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         StringProperty mazeTypeProperty = new SimpleStringProperty(Configurations.prop.getProperty("MazeGenerator"));
         StringProperty searchTypeProperty = new SimpleStringProperty(Configurations.prop.getProperty("searchingAlgorithm"));
+        BooleanProperty muteProperty= new SimpleBooleanProperty(Configurations.prop.getProperty("mute").equals("true"));
         searchingAlgorithm.promptTextProperty().bind(searchTypeProperty);
         generatingAlgorithm.promptTextProperty().bind(mazeTypeProperty);
+        muteBox.selectedProperty().bindBidirectional(muteProperty);
+
         searchingAlgorithm.getItems().addAll(
                 "BreadthFirstSearch",
                 "BestFirstSearch",
@@ -52,6 +61,8 @@ public class proControl implements Initializable {
             window.hide();
         });
     }
+
+
     private void applyAction(){
         if (generatingAlgorithm.getValue()!=null){
            // generatingAlgorithm.setPromptText(generatingAlgorithm.getValue());
@@ -59,7 +70,11 @@ public class proControl implements Initializable {
         if (searchingAlgorithm.getValue()!=null){
             //searchingAlgorithm.setPromptText(searchingAlgorithm.getValue());
             Configurations.prop.setProperty("searchingAlgorithm",searchingAlgorithm.getValue());}
+        Configurations.prop.setProperty("mute",muteBox.isSelected()?"true":"false");
       updatePro();
+    }
+    public void mute(ActionEvent event){
+
     }
 
     private void updatePro() {

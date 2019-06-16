@@ -1,18 +1,16 @@
 package View;
 
 
+import Server.Configurations;
 import ViewModel.MyViewModel;
 import algorithms.search.AState;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -35,6 +33,7 @@ import javafx.util.Duration;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -51,6 +50,7 @@ public class MyViewController implements Observer, IView {
     public javafx.scene.control.Button btn_solveMaze;
     public javafx.scene.control.MenuItem menuItem_save;
     public MediaPlayer mediaPlayer;
+    private int num_click;
 
     //Properties - For Binding
     public StringProperty characterPositionRow = new SimpleStringProperty("1");
@@ -58,10 +58,12 @@ public class MyViewController implements Observer, IView {
     public StringProperty goalPositionColumn = new SimpleStringProperty("1");
     public StringProperty goalPositionRow = new SimpleStringProperty("1");
 
+
     @FXML
     private MyViewModel viewModel;
     private Scene mainScene;
     private Stage mainStage;
+
 
     public void initialize(MyViewModel viewModel, Stage mainStage, Scene mainScene) {
         this.viewModel = viewModel;
@@ -110,20 +112,21 @@ public class MyViewController implements Observer, IView {
         btn_solveMaze.setDisable(false);
         menuItem_save.setDisable(false);
         if (viewModel.isFinished()) {
-            playMusic("resources/winSound.mp3", false);
+            playMusic("resources/winSound.mp3", false, false);
         }
     }
 
-    private void playMusic(String path, boolean loop) {
+    private void playMusic(String path, boolean loop, boolean mutable) {
+        String mute_off=Configurations.prop.getProperty("mute");
         Media sound = new Media(new File(path).toURI().toString());
-
         if (mediaPlayer != null)
             mediaPlayer.stop();
 
         mediaPlayer = new MediaPlayer(sound);
         if (loop)
             mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
-
+        if(mutable)
+            mediaPlayer.setMute(mute_off.equals("true"));
         mediaPlayer.play();
     }
 
@@ -166,22 +169,29 @@ public class MyViewController implements Observer, IView {
 
     public void properties(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Properties.fxml"));
-        popABox(root, 600, 400);
+        Stage box = popABox(root, 600, 400);
+        box.setOnHiding(e -> {
+            String mute_off=Configurations.prop.getProperty("mute");
+
+            if(mediaPlayer != null)
+                mediaPlayer.setMute(mute_off.equals("true"));
+        });
     }
 
 
     private void popABox(Parent root) {
-        popABox(root, 500, 300);
+        popABox(root, 400, 250);
 
     }
 
-    private void popABox(Parent root, double width, double height) {
+    private Stage popABox(Parent root, double width, double height) {
         Stage box = new Stage();
         box.setScene(new Scene(root, width, height));
         box.initModality(Modality.APPLICATION_MODAL);
         box.initStyle(StageStyle.UNDECORATED);
         box.show();
 
+        return box;
     }
 
     private boolean validCols = true, validRows = true;
@@ -189,7 +199,10 @@ public class MyViewController implements Observer, IView {
     private void bindProperties() {
 //        lbl_rowsNum.textProperty().bind(this.characterPositionRow);
 //        lbl_columnsNum.textProperty().bind(this.characterPositionColumn);
-
+        BooleanProperty muteProperty= new SimpleBooleanProperty(Configurations.prop.getProperty("mute").equals("true"));
+        muteProperty.addListener((observable, oldValue, newValue) -> {
+           if(mediaPlayer!=null){mediaPlayer.stop();}
+        });
         txtfld_columnsNum.textProperty().addListener((observable, oldValue, newValue) -> {
             validCols = newValue.length() > 0;
             btn_generateMaze.setDisable(!validRows || !validCols);
@@ -219,7 +232,7 @@ public class MyViewController implements Observer, IView {
             resetSolution();
             mazeDisplayer.redraw();
 
-            playMusic("resources/backgroundMusic.mp3", true);
+            playMusic("resources/backgroundMusic.mp3", true, true);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.initStyle(StageStyle.UNDECORATED);
@@ -289,6 +302,19 @@ public class MyViewController implements Observer, IView {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Maze files (*.maze)", "*.maze");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser;
+    }
+    public void backDoor() {
+        num_click++;
+        if(num_click==5) {
+            try {
+                Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start chrome  --kiosk https://www.playdosgames.com/play/dangerous-dave/"});
+                num_click=0;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     public void onScroll(ScrollEvent scrollEvent) {
