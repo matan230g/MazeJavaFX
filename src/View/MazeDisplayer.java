@@ -16,18 +16,43 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MazeDisplayer extends Canvas {
+    // Assets
+    private Image wallImage;
+    private Image characterImage;
+    private Image goalImage;
 
-
+    // Properties
+    private boolean assetsLoaded;
     private int[][] maze;
-    private int characterPositionRow ;
-    private int characterPositionColumn ;
+    private int characterPositionRow;
+    private int characterPositionColumn;
     private int goalPositionRow;
     private int goalPositionColumn;
+    private ArrayList<AState> solution;
 
+    public MazeDisplayer() {
+        assetsLoaded = false;
+    }
+
+    private void loadAssets()
+    {
+        try {
+            wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
+            characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
+            goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
+            assetsLoaded = true;
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+        }
+    }
 
     public void setMaze(int[][] maze) {
         this.maze = maze;
         redraw();
+    }
+
+    public void setSolution(ArrayList<AState> solution) {
+        this.solution = solution;
     }
 
     public void setCharacterPosition(int row, int column) {
@@ -35,6 +60,7 @@ public class MazeDisplayer extends Canvas {
         characterPositionColumn = column;
         redraw();
     }
+
     public void setGoalPosition(int row, int column) {
         goalPositionRow = row;
         goalPositionColumn = column;
@@ -42,38 +68,47 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void redraw() {
+        if(!assetsLoaded)
+            loadAssets();
         if (maze != null) {
+            GraphicsContext gc = getGraphicsContext2D();
+            // Calculate dimensions
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
             double cellHeight = Math.floor(canvasHeight / maze.length);
             double cellWidth = Math.floor(canvasWidth / maze[0].length);
 
-            try {
-                Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
-                Image characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
-                Image goalImage=new Image(new FileInputStream(ImageFileNameGoal.get()));
+            gc.clearRect(0, 0, getWidth(), getHeight());
 
-                GraphicsContext gc = getGraphicsContext2D();
-                gc.clearRect(0, 0, getWidth(), getHeight());
+            //Draw
+            drawMaze(gc, cellWidth, cellHeight);
+            if (solution != null)
+                drawSolution(gc, cellWidth, cellHeight);
+            gc.drawImage(goalImage, goalPositionColumn * cellWidth, goalPositionRow * cellHeight, cellWidth, cellHeight);
+            gc.drawImage(characterImage, characterPositionColumn * cellWidth, characterPositionRow * cellHeight, cellWidth, cellHeight);
+        }
+    }
 
-                //Draw Maze
-                for (int i = 0; i < maze.length; i++) {
-                    for (int j = 0; j < maze[i].length; j++) {
-                        if (maze[i][j] == 1) {
-                            //gc.fillRect(i * cellHeight, j * cellWidth, cellHeight, cellWidth);
-                            gc.drawImage(wallImage, j * cellWidth, i * cellHeight, cellWidth,cellHeight);
-                        }
-                    }
+    private void drawMaze(GraphicsContext gc, double cellWidth, double cellHeight) {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j] == 1) {
+                    gc.drawImage(wallImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight);
                 }
-
-                //Draw Character
-                //gc.setFill(Color.RED);
-                //gc.fillOval(characterPositionColumn * cellHeight, characterPositionRow * cellWidth, cellHeight, cellWidth);
-                gc.drawImage(goalImage,goalPositionColumn*cellWidth,goalPositionRow*cellHeight,cellWidth,cellHeight);
-                gc.drawImage(characterImage, characterPositionColumn * cellWidth, characterPositionRow * cellHeight, cellWidth,cellHeight);
-            } catch (FileNotFoundException e) {
-                //e.printStackTrace();
             }
+        }
+    }
+
+    private void drawSolution(GraphicsContext gc, double cellWidth, double cellHeight) {
+        for (AState state : solution) {
+            int row, col;
+            MazeState m = (MazeState) state;
+            row = m.getPosition().getRowIndex();
+            col = m.getPosition().getColumnIndex();
+            if (row == goalPositionRow && col == goalPositionColumn || row == characterPositionRow && col == characterPositionColumn)
+                continue; // Don't draw above character or goal
+            gc.setFill(Color.GREEN);
+            gc.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
         }
     }
 
@@ -97,36 +132,19 @@ public class MazeDisplayer extends Canvas {
     public void setImageFileNameCharacter(String imageFileNameCharacter) {
         this.ImageFileNameCharacter.set(imageFileNameCharacter);
     }
+
     public String getImageFileNameGoal() {
         return ImageFileNameGoal.get();
     }
+
     public void setImageFileNameGoal(String imageFileNameGoal) {
         this.ImageFileNameGoal.set(imageFileNameGoal);
     }
     //endregion
 
-    public void changeSize(){
+    public void changeSize() {
         this.setScaleX(150);
         this.setScaleY(150);
-    }
-
-    public void drawSol(ArrayList<AState> sol) {
-        double canvasHeight = getHeight();
-        double canvasWidth = getWidth();
-        double cellHeight = Math.floor(canvasHeight / maze.length);
-        double cellWidth = Math.floor(canvasWidth / maze[0].length);
-        GraphicsContext gc = getGraphicsContext2D();
-        for (AState state : sol){
-            int row,col;
-            MazeState m=(MazeState) state;
-            row=m.getPosition().getRowIndex();
-            col=m.getPosition().getColumnIndex();
-            if(row == goalPositionRow && col == goalPositionColumn || row == characterPositionRow && col == characterPositionColumn)
-                continue; // Don't draw above character or goal
-            gc.setFill(Color.GREEN);
-            gc.fillRect(col * cellWidth, row *cellHeight ,cellWidth , cellHeight);
-        }
-
     }
 
     public void cleanDraw() {

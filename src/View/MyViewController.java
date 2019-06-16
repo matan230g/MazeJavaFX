@@ -190,6 +190,8 @@ public class MyViewController implements Observer, IView {
 
     public void onKeyPressed(KeyEvent keyEvent) {
         viewModel.moveCharacter(keyEvent.getCode());
+        ArrayList<AState> solution = viewModel.getSolution();
+        mazeDisplayer.setSolution(solution);
         keyEvent.consume();
     }
     public void change(KeyEvent e){
@@ -197,11 +199,17 @@ public class MyViewController implements Observer, IView {
 
     }
     public void solveMaze(ActionEvent event){
-        viewModel.solveMaze();
-        ArrayList<AState> sol= viewModel.getSolution();
-        mazeDisplayer.drawSol(sol);
-
-
+        if(viewModel.getSolution() != null){
+            viewModel.resetSolution();
+            btn_solveMaze.setText("Solve Maze");
+        }
+        else{
+            viewModel.solveMaze();
+            btn_solveMaze.setText("Hide Solution");
+        }
+        ArrayList<AState> solution = viewModel.getSolution();
+        mazeDisplayer.setSolution(solution);
+        mazeDisplayer.redraw();
     }
 
 

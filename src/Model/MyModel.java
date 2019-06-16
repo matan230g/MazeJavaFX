@@ -11,6 +11,7 @@ import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
+import algorithms.search.MazeState;
 import algorithms.search.Solution;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
@@ -36,6 +37,7 @@ public class MyModel extends Observable implements IModel {
 
     Server mazeGeneratingServer;
     Server solveSearchProblemServer;
+
     public void startServers() {
         mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
         solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
@@ -108,11 +110,11 @@ public class MyModel extends Observable implements IModel {
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject();
                         InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
-                        byte[] decompressedMaze = new byte[rows*cols+100];
+                        byte[] decompressedMaze = new byte[rows * cols + 100];
                         is.read(decompressedMaze);
                         maze = new Maze(decompressedMaze);
-                        characterPositionColumn=maze.getStartPosition().getColumnIndex();
-                        characterPositionRow=maze.getStartPosition().getRowIndex();
+                        characterPositionColumn = maze.getStartPosition().getColumnIndex();
+                        characterPositionRow = maze.getStartPosition().getRowIndex();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -127,7 +129,9 @@ public class MyModel extends Observable implements IModel {
             e2.printStackTrace();
         }
     }
+
     ArrayList<AState> mazeSolutionSteps = null;
+
     @Override
     public void solveMaze() {
         try {
@@ -137,10 +141,10 @@ public class MyModel extends Observable implements IModel {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         toServer.flush();
-                        maze.setStartPosition(new Position(characterPositionRow,characterPositionColumn));
+                        maze.setStartPosition(new Position(characterPositionRow, characterPositionColumn));
                         toServer.writeObject(maze);
                         toServer.flush();
-                        Solution mazeSolution = (Solution)fromServer.readObject();
+                        Solution mazeSolution = (Solution) fromServer.readObject();
                         System.out.println(String.format("Solution steps: %s", mazeSolution));
                         mazeSolutionSteps = mazeSolution.getSolutionPath();
 
@@ -168,41 +172,123 @@ public class MyModel extends Observable implements IModel {
         int newCol = characterPositionColumn;
 
         switch (movement) {
-            case UP:
+            case NUMPAD8:
                 newRow--;
+                updatePosition(newRow, newCol);
                 break;
-            case DOWN:
+            case NUMPAD2:
                 newRow++;
+                updatePosition(newRow, newCol);
                 break;
-            case RIGHT:
+            case NUMPAD6:
                 newCol++;
+                updatePosition(newRow, newCol);
                 break;
-            case LEFT:
+            case NUMPAD4:
                 newCol--;
+                updatePosition(newRow, newCol);
+                break;
+
+            case NUMPAD9:
+                newCol++;
+                updatePosition(newRow, newCol);
+                newRow--;
+                updatePosition(newRow, newCol);
+                break;
+
+            case NUMPAD7:
+                newCol--;
+                updatePosition(newRow, newCol);
+                newRow--;
+                updatePosition(newRow, newCol);
+                break;
+
+            case NUMPAD1:
+                newCol--;
+                updatePosition(newRow, newCol);
+                newRow++;
+                updatePosition(newRow, newCol);
+                break;
+
+            case NUMPAD3:
+                newCol++;
+                updatePosition(newRow, newCol);
+                newRow++;
+                updatePosition(newRow, newCol);
                 break;
             case HOME:
                 newRow = 0;
                 newCol = 0;
+                updatePosition(newRow, newCol);
         }
+
+        setChanged();
+        notifyObservers();
+    }
+
+    private void updatePosition(int newRow, int newCol) {
         if (maze.checkIfPositionValid(new Position(newRow, newCol), Maze.EMPTY_TILE)) {
+            // Update solution
+            updateSolution(newRow, newCol);
+
+            // Update position
             characterPositionRow = newRow;
             characterPositionColumn = newCol;
-            setChanged();
-            notifyObservers();
         }
+    }
+
+    void updateSolution(int row, int col) {
+        if (mazeSolutionSteps == null)
+            return;
+        int currentIndex = -1;
+        boolean advanced = false;
+
+        for (int i = 1; i < mazeSolutionSteps.size(); i++) // Find current solution index
+        {
+            MazeState current = (MazeState) mazeSolutionSteps.get(i);
+            MazeState previous = (MazeState) mazeSolutionSteps.get(i - 1);
+            // Check if above step
+            if (row == current.getPosition().getRowIndex() && col == current.getPosition().getColumnIndex()) {
+                currentIndex = i;
+                advanced = true;
+                break;
+            }
+
+            // Check if between steps
+            if (row == previous.getPosition().getRowIndex() && col == current.getPosition().getColumnIndex() ||
+                    row == current.getPosition().getRowIndex() && col == previous.getPosition().getColumnIndex()) {
+                currentIndex = i;
+                advanced = true;
+                break;
+            }
+        }
+
+        while (currentIndex-- > 0)
+            mazeSolutionSteps.remove(0);
+
+        if (!advanced)
+            addToSolution(row, col);
+    }
+
+    void addToSolution(int row, int col) {
+        MazeState newState = new MazeState(new Position(row, col));
+        ArrayList<AState> newSolution = new ArrayList<>();
+        newSolution.add(newState);
+        newSolution.addAll(mazeSolutionSteps);
+        mazeSolutionSteps = newSolution;
     }
 
     @Override
     public void openFile(File file) {
-        byte[] savedMazeBytes=new byte[10000];
+        byte[] savedMazeBytes = new byte[10000];
         try {
             FileInputStream loadFile = new FileInputStream(file);
-            InputStream in= new MyDecompressorInputStream(loadFile);
+            InputStream in = new MyDecompressorInputStream(loadFile);
             in.read(savedMazeBytes);
             in.close();
-            maze=new Maze(savedMazeBytes);
-            characterPositionColumn=maze.getStartPosition().getColumnIndex();
-            characterPositionRow=maze.getStartPosition().getRowIndex();
+            maze = new Maze(savedMazeBytes);
+            characterPositionColumn = maze.getStartPosition().getColumnIndex();
+            characterPositionRow = maze.getStartPosition().getRowIndex();
             setChanged();
             notifyObservers();
         } catch (IOException var7) {
@@ -211,8 +297,9 @@ public class MyModel extends Observable implements IModel {
 
 
     }
+
     @Override
-    public void saveMaze(String path){
+    public void saveMaze(String path) {
         try {
             OutputStream out = new MyCompressorOutputStream(new FileOutputStream(path));
             out.write(maze.toByteArray());
@@ -222,5 +309,10 @@ public class MyModel extends Observable implements IModel {
             var8.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void resetSolution() {
+        mazeSolutionSteps = null;
     }
 }

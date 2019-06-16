@@ -26,4 +26,6 @@ public interface IModel {
 
     void openFile(File file);
     void saveMaze(String path);
+
+    void resetSolution();
 }

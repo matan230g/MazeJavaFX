@@ -85,4 +85,8 @@ public class MyViewModel extends Observable implements Observer {
     public void saveMaze(String path){
         model.saveMaze(path);
     }
+
+    public void resetSolution() {
+        model.resetSolution();
+    }
 }
