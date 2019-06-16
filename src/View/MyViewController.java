@@ -3,16 +3,11 @@ package View;
 
 import ViewModel.MyViewModel;
 import algorithms.search.AState;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 
 import javafx.scene.input.ScrollEvent;
@@ -49,6 +45,7 @@ public class MyViewController implements Observer, IView {
     public javafx.scene.control.Label lbl_columnsNum;
     public javafx.scene.control.Button btn_generateMaze;
     public javafx.scene.control.Button btn_solveMaze;
+    public TimerLabel timer;
     public javafx.scene.control.MenuItem menuItem_save;
     public MediaPlayer mediaPlayer;
 
@@ -57,6 +54,7 @@ public class MyViewController implements Observer, IView {
     public StringProperty characterPositionColumn = new SimpleStringProperty("1");
     public StringProperty goalPositionColumn = new SimpleStringProperty("1");
     public StringProperty goalPositionRow = new SimpleStringProperty("1");
+    public ImageView victoryScreen;
 
     @FXML
     private MyViewModel viewModel;
@@ -95,8 +93,6 @@ public class MyViewController implements Observer, IView {
         mazeDisplayer.cleanDraw();
         btn_solveMaze.setDisable(true);
         menuItem_save.setDisable(true);
-
-
     }
 
     public void displayMaze(int[][] maze, int goalRow, int goalCol) {
@@ -111,6 +107,8 @@ public class MyViewController implements Observer, IView {
         menuItem_save.setDisable(false);
         if (viewModel.isFinished()) {
             playMusic("resources/winSound.mp3", false);
+            timer.stop();
+            victoryScreen.setVisible(true);
         }
     }
 
@@ -218,7 +216,8 @@ public class MyViewController implements Observer, IView {
             mazeDisplayer.resetZoom();
             resetSolution();
             mazeDisplayer.redraw();
-
+            timer.start();
+            victoryScreen.setVisible(false);
             playMusic("resources/backgroundMusic.mp3", true);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -238,7 +237,7 @@ public class MyViewController implements Observer, IView {
 
     public void onKeyPressed(KeyEvent keyEvent) {
         if (!viewModel.isFinished()) {
-            viewModel.moveCharacter(keyEvent.getCode());
+            viewModel.keyPressed(keyEvent.getCode());
             ArrayList<AState> solution = viewModel.getSolution();
             mazeDisplayer.setSolution(solution);
             mazeDisplayer.setCharacterDirection(viewModel.getCharacterDirection());
@@ -246,6 +245,10 @@ public class MyViewController implements Observer, IView {
             mazeDisplayer.redraw();
         }
         keyEvent.consume();
+    }
+
+    public void onKeyReleased(KeyEvent keyEvent) {
+        viewModel.keyReleased(keyEvent.getCode());
     }
 
     public void solveMaze(ActionEvent event) {
@@ -292,6 +295,7 @@ public class MyViewController implements Observer, IView {
     }
 
     public void onScroll(ScrollEvent scrollEvent) {
-        mazeDisplayer.changeZoom(scrollEvent.getDeltaY() > 0 ? 1 : -1);
+        if (viewModel.isCtrlPressed())
+            mazeDisplayer.changeZoom(scrollEvent.getDeltaY() > 0 ? 1 : -1);
     }
 }
