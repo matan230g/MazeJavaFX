@@ -48,7 +48,7 @@ public class MyViewController implements Observer, IView {
     public javafx.scene.control.Button btn_generateMaze;
     public javafx.scene.control.Button btn_solveMaze;
     public javafx.scene.control.MenuItem menuItem_save;
-    public  MediaPlayer mediaPlayer;
+    public MediaPlayer mediaPlayer;
 
     //Properties - For Binding
     public StringProperty characterPositionRow = new SimpleStringProperty("1");
@@ -88,7 +88,8 @@ public class MyViewController implements Observer, IView {
             System.out.println("Height: " + newValue);
         });
     }
-    public void newFile(ActionEvent event){
+
+    public void newFile(ActionEvent event) {
         mazeDisplayer.cleanDraw();
         btn_solveMaze.setDisable(true);
         menuItem_save.setDisable(true);
@@ -106,7 +107,7 @@ public class MyViewController implements Observer, IView {
         this.characterPositionColumn.set(characterPositionColumn + "");
         btn_solveMaze.setDisable(false);
         menuItem_save.setDisable(false);
-        if(viewModel.isFinished()){
+        if (viewModel.isFinished()) {
             playMusic("resources/winSound.mp3");
 
 
@@ -133,7 +134,7 @@ public class MyViewController implements Observer, IView {
         dialogPane.getStyleClass().add("myDialog");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.get() == ButtonType.OK) {
             viewModel.close();
         }
 //        Parent root = FXMLLoader.load(getClass().getResource("exitBox.fxml"));
@@ -141,8 +142,8 @@ public class MyViewController implements Observer, IView {
     }
 
     public void close(ActionEvent event) {
-       viewModel.close();
-       mainStage.close();
+        viewModel.close();
+        mainStage.close();
     }
 
     public void stay(ActionEvent event) {
@@ -155,18 +156,19 @@ public class MyViewController implements Observer, IView {
         Parent root = FXMLLoader.load(getClass().getResource("aboutBox.fxml"));
         popABox(root);
     }
+
     public void properties(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Properties.fxml"));
-        popABox(root,600,400);
+        popABox(root, 600, 400);
     }
 
 
     private void popABox(Parent root) {
-       popABox(root,500,300);
+        popABox(root, 500, 300);
 
     }
 
-    private void popABox(Parent root,double width,double height) {
+    private void popABox(Parent root, double width, double height) {
         Stage box = new Stage();
         box.setScene(new Scene(root, width, height));
         box.initModality(Modality.APPLICATION_MODAL);
@@ -174,6 +176,7 @@ public class MyViewController implements Observer, IView {
         box.show();
 
     }
+
     private boolean validCols = true, validRows = true;
 
     private void bindProperties() {
@@ -201,40 +204,43 @@ public class MyViewController implements Observer, IView {
             // TODO log
         }
 
-        if(viewModel.generateMaze(rows, cols)){
-           btn_generateMaze.setDisable(true);
-           btn_solveMaze.setDisable(true);
-           mazeDisplayer.requestFocus();}
-       else{
-           Alert alert = new Alert(Alert.AlertType.WARNING);
-           alert.initStyle(StageStyle.UNDECORATED);
-           alert.setContentText("Wrong input, maze size between 3 to 100");
-           DialogPane dialogPane = alert.getDialogPane();
-           dialogPane.getStylesheets().add(
-                   getClass().getResource("MainStyle.css").toExternalForm());
-           dialogPane.getStyleClass().add("myDialog");
-           alert.showAndWait();
+        if (viewModel.generateMaze(rows, cols)) {
+            btn_generateMaze.setDisable(true);
+            btn_solveMaze.setDisable(true);
+            mazeDisplayer.requestFocus();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.initStyle(StageStyle.UNDECORATED);
+            alert.setContentText("Wrong input, maze size between 3 to 100");
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.getStylesheets().add(
+                    getClass().getResource("MainStyle.css").toExternalForm());
+            dialogPane.getStyleClass().add("myDialog");
+            alert.showAndWait();
 
 
-       }
-
-    }
-    public void mouseTest(MouseEvent mouseEvent){
+        }
 
     }
+
+    public void mouseTest(MouseEvent mouseEvent) {
+
+    }
+
     public void onKeyPressed(KeyEvent keyEvent) {
-        viewModel.moveCharacter(keyEvent.getCode());
-        ArrayList<AState> solution = viewModel.getSolution();
-        mazeDisplayer.setSolution(solution);
+        if (!viewModel.isFinished()) {
+            viewModel.moveCharacter(keyEvent.getCode());
+            ArrayList<AState> solution = viewModel.getSolution();
+            mazeDisplayer.setSolution(solution);
+        }
         keyEvent.consume();
     }
 
-    public void solveMaze(ActionEvent event){
-        if(viewModel.getSolution() != null){
+    public void solveMaze(ActionEvent event) {
+        if (viewModel.getSolution() != null) {
             viewModel.resetSolution();
             btn_solveMaze.setText("Solve Maze");
-        }
-        else{
+        } else {
             viewModel.solveMaze();
             btn_solveMaze.setText("Hide Solution");
         }
@@ -251,6 +257,7 @@ public class MyViewController implements Observer, IView {
         mazeDisplayer.requestFocus();
 
     }
+
     public void saveMaze(ActionEvent event) {
         FileChooser fileChooser = getFileChooser();
         File file = fileChooser.showSaveDialog(mainStage);
