@@ -1,6 +1,7 @@
 package ViewModel;
 
 import Model.IModel;
+import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import javafx.scene.input.KeyCode;
 
@@ -15,10 +16,13 @@ import java.util.Observer;
 public class MyViewModel extends Observable implements Observer {
 
     private IModel model;
-    private boolean isCtrlPressed = false;
+    private boolean isCtrlPressed;
+    boolean mouseDragActive;
 
     public MyViewModel(IModel model) {
         this.model = model;
+        mouseDragActive = false;
+        isCtrlPressed = false;
     }
 
 
@@ -32,7 +36,7 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public boolean generateMaze(int rows, int cols) {
-        if(rows<3 ||cols<3||rows>100||cols>100)
+        if (rows < 3 || cols < 3 || rows > 100 || cols > 100)
             return false;
         if (rows % 2 == 0)
             rows--;
@@ -46,16 +50,19 @@ public class MyViewModel extends Observable implements Observer {
     public void solveMaze() {
         model.solveMaze();
     }
+
     public ArrayList<AState> getSolution() {
         return model.getSolution();
     }
+
     public void keyPressed(KeyCode code) {
         model.moveCharacter(code);
-        if(code == KeyCode.CONTROL)
+        if (code == KeyCode.CONTROL)
             isCtrlPressed = true;
     }
+
     public void keyReleased(KeyCode code) {
-        if(code == KeyCode.CONTROL)
+        if (code == KeyCode.CONTROL)
             isCtrlPressed = false;
     }
     //</editor-fold>
@@ -86,12 +93,16 @@ public class MyViewModel extends Observable implements Observer {
     public boolean isFinished() {
         return model.isFinished();
     }
-    public void close(){model.close();}
+
+    public void close() {
+        model.close();
+    }
 
     public void openFile(File file) {
         model.openFile(file);
     }
-    public void saveMaze(String path){
+
+    public void saveMaze(String path) {
         model.saveMaze(path);
     }
 
@@ -108,5 +119,33 @@ public class MyViewModel extends Observable implements Observer {
 
     public boolean isCtrlPressed() {
         return isCtrlPressed;
+    }
+
+    public void mousePress(Position position) {
+        if (getCharacterPositionRow() == position.getRowIndex() && getCharacterPositionColumn() == position.getColumnIndex())
+            mouseDragActive = true;
+        if (mouseDragActive)
+            System.out.println("DRAG ACTIVE");
+    }
+
+    public void mouseRelease() {
+        if (mouseDragActive)
+            System.out.println("DRAG FINISHED");
+        mouseDragActive = false;
+    }
+
+
+    public void mouseMove(Position position) {
+        if (!mouseDragActive)
+            return;
+
+        if (position.getRowIndex() > getCharacterPositionRow())
+            model.moveCharacter(KeyCode.NUMPAD2);
+        if (position.getRowIndex() < getCharacterPositionRow())
+            model.moveCharacter(KeyCode.NUMPAD8);
+        if (position.getColumnIndex() < getCharacterPositionColumn())
+            model.moveCharacter(KeyCode.NUMPAD4);
+        if (position.getColumnIndex() > getCharacterPositionColumn())
+            model.moveCharacter(KeyCode.NUMPAD6);
     }
 }

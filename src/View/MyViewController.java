@@ -2,12 +2,14 @@ package View;
 
 
 import ViewModel.MyViewModel;
+import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -297,5 +299,28 @@ public class MyViewController implements Observer, IView {
     public void onScroll(ScrollEvent scrollEvent) {
         if (viewModel.isCtrlPressed())
             mazeDisplayer.changeZoom(scrollEvent.getDeltaY() > 0 ? 1 : -1);
+    }
+
+
+    public void mousePress(MouseEvent mouseEvent) {
+        Bounds bounds = mazeDisplayer.localToScene(mazeDisplayer.getBoundsInLocal());
+        double x = mouseEvent.getX() - bounds.getMinX();
+        double y = mouseEvent.getY() - bounds.getMinY();
+        Position clickPos = mazeDisplayer.projectClickToTile(x, y);
+        viewModel.mousePress(clickPos);
+    }
+    public void mouseRelease(MouseEvent mouseEvent) {
+        viewModel.mouseRelease();
+    }
+
+    public void mouseMove(MouseEvent mouseEvent) {
+        if(viewModel.isFinished())
+            return;
+
+        Bounds bounds = mazeDisplayer.localToScene(mazeDisplayer.getBoundsInLocal());
+        double x = mouseEvent.getX() - bounds.getMinX();
+        double y = mouseEvent.getY() - bounds.getMinY();
+        Position mousePos = mazeDisplayer.projectClickToTile(x, y);
+        viewModel.mouseMove(mousePos);
     }
 }
