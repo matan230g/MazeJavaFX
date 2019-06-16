@@ -19,8 +19,8 @@ public class MazeDisplayer extends Canvas {
 
 
     private int[][] maze;
-    private int characterPositionRow = 0;
-    private int characterPositionColumn = 0;
+    private int characterPositionRow ;
+    private int characterPositionColumn ;
     private int goalPositionRow;
     private int goalPositionColumn;
 
@@ -45,8 +45,8 @@ public class MazeDisplayer extends Canvas {
         if (maze != null) {
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            double cellHeight = canvasHeight / maze.length;
-            double cellWidth = canvasWidth / maze[0].length;
+            double cellHeight = Math.floor(canvasHeight / maze.length);
+            double cellWidth = Math.floor(canvasWidth / maze[0].length);
 
             try {
                 Image wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
@@ -113,17 +113,26 @@ public class MazeDisplayer extends Canvas {
     public void drawSol(ArrayList<AState> sol) {
         double canvasHeight = getHeight();
         double canvasWidth = getWidth();
-        double cellHeight = canvasHeight / maze.length;
-        double cellWidth = canvasWidth / maze[0].length;
+        double cellHeight = Math.floor(canvasHeight / maze.length);
+        double cellWidth = Math.floor(canvasWidth / maze[0].length);
         GraphicsContext gc = getGraphicsContext2D();
         for (AState state : sol){
             int row,col;
             MazeState m=(MazeState) state;
             row=m.getPosition().getRowIndex();
             col=m.getPosition().getColumnIndex();
+            if(row == goalPositionRow && col == goalPositionColumn || row == characterPositionRow && col == characterPositionColumn)
+                continue; // Don't draw above character or goal
             gc.setFill(Color.GREEN);
-            gc.fillRect(col * cellHeight, row * cellWidth, cellHeight, cellWidth);
+            gc.fillRect(col * cellWidth, row *cellHeight ,cellWidth , cellHeight);
         }
 
+    }
+
+    public void cleanDraw() {
+        double canvasHeight = getHeight();
+        double canvasWidth = getWidth();
+        GraphicsContext gc = getGraphicsContext2D();
+        gc.clearRect(0, 0, canvasWidth, canvasHeight);
     }
 }

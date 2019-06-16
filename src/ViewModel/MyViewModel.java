@@ -4,6 +4,7 @@ import Model.IModel;
 import algorithms.search.AState;
 import javafx.scene.input.KeyCode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -76,5 +77,12 @@ public class MyViewModel extends Observable implements Observer {
     public boolean isFinished() {
         return model.isFinished();
     }
+    public void close(){model.close();}
 
+    public void openFile(File file) {
+        model.openFile(file);
+    }
+    public void saveMaze(String path){
+        model.saveMaze(path);
+    }
 }

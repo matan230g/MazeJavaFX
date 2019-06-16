@@ -3,6 +3,7 @@ package Model;
 import algorithms.search.AState;
 import javafx.scene.input.KeyCode;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -22,4 +23,7 @@ public interface IModel {
 
     void solveMaze();
     ArrayList<AState> getSolution();
+
+    void openFile(File file);
+    void saveMaze(String path);
 }

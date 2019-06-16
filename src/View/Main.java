@@ -3,12 +3,11 @@ package View;
 import Model.MyModel;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+
 
 public class Main extends Application {
     private static Stage primaryStage; // **Declare static Stage**
@@ -36,6 +35,13 @@ public class Main extends Application {
         view.initialize(viewModel,primaryStage,scene);
         viewModel.addObserver(view);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume();
+            try{
+            view.handleCloseButtonAction(null);}
+            catch(Exception e){e.printStackTrace();}
+
+        });
     }
 
     public static void main(String[] args) {
