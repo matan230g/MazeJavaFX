@@ -38,6 +38,13 @@ public class MyModel extends Observable implements IModel {
     Server mazeGeneratingServer;
     Server solveSearchProblemServer;
 
+    ArrayList<AState> mazeSolutionSteps = null;
+
+    private Maze maze;
+    private int characterPositionRow;
+    private int characterPositionColumn;
+    private int characterDirection = 1;
+
     public void startServers() {
         mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
         solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
@@ -50,9 +57,6 @@ public class MyModel extends Observable implements IModel {
         mazeGeneratingServer.stop();
     }
 
-    private Maze maze;
-    private int characterPositionRow;
-    private int characterPositionColumn;
 
     @Override
     public int[][] getMaze() {
@@ -129,8 +133,6 @@ public class MyModel extends Observable implements IModel {
             e2.printStackTrace();
         }
     }
-
-    ArrayList<AState> mazeSolutionSteps = null;
 
     @Override
     public void solveMaze() {
@@ -231,6 +233,12 @@ public class MyModel extends Observable implements IModel {
             // Update solution
             updateSolution(newRow, newCol);
 
+            // Update direction
+            if(newCol > characterPositionColumn)
+                characterDirection = 1;
+            if(newCol < characterPositionColumn)
+                characterDirection = -1;
+
             // Update position
             characterPositionRow = newRow;
             characterPositionColumn = newCol;
@@ -314,5 +322,10 @@ public class MyModel extends Observable implements IModel {
     @Override
     public void resetSolution() {
         mazeSolutionSteps = null;
+    }
+
+    @Override
+    public int getCharacterDirection() {
+        return characterDirection;
     }
 }

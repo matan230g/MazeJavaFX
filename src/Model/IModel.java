@@ -28,4 +28,6 @@ public interface IModel {
     void saveMaze(String path);
 
     void resetSolution();
+
+    int getCharacterDirection();
 }

@@ -92,4 +92,11 @@ public class MyViewModel extends Observable implements Observer {
     public void resetSolution() {
         model.resetSolution();
     }
+
+    /**
+     * @return 1 = right, -1 = left
+     */
+    public int getCharacterDirection() {
+        return model.getCharacterDirection();
+    }
 }

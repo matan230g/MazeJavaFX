@@ -22,6 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.input.KeyEvent;
 
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -30,6 +31,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 
 import java.io.File;
@@ -108,15 +110,20 @@ public class MyViewController implements Observer, IView {
         btn_solveMaze.setDisable(false);
         menuItem_save.setDisable(false);
         if (viewModel.isFinished()) {
-            playMusic("resources/winSound.mp3");
-
-
+            playMusic("resources/winSound.mp3", false);
         }
     }
 
-    private void playMusic(String path) {
+    private void playMusic(String path, boolean loop) {
         Media sound = new Media(new File(path).toURI().toString());
-        this.mediaPlayer = new MediaPlayer(sound);
+
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
+
+        mediaPlayer = new MediaPlayer(sound);
+        if (loop)
+            mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
+
         mediaPlayer.play();
     }
 
@@ -205,9 +212,14 @@ public class MyViewController implements Observer, IView {
         }
 
         if (viewModel.generateMaze(rows, cols)) {
-            btn_generateMaze.setDisable(true);
-            btn_solveMaze.setDisable(true);
+//            btn_generateMaze.setDisable(true);
+//            btn_solveMaze.setDisable(true);
             mazeDisplayer.requestFocus();
+            mazeDisplayer.resetZoom();
+            resetSolution();
+            mazeDisplayer.redraw();
+
+            playMusic("resources/backgroundMusic.mp3", true);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.initStyle(StageStyle.UNDECORATED);
@@ -217,10 +229,7 @@ public class MyViewController implements Observer, IView {
                     getClass().getResource("MainStyle.css").toExternalForm());
             dialogPane.getStyleClass().add("myDialog");
             alert.showAndWait();
-
-
         }
-
     }
 
     public void mouseTest(MouseEvent mouseEvent) {
@@ -232,14 +241,16 @@ public class MyViewController implements Observer, IView {
             viewModel.moveCharacter(keyEvent.getCode());
             ArrayList<AState> solution = viewModel.getSolution();
             mazeDisplayer.setSolution(solution);
+            mazeDisplayer.setCharacterDirection(viewModel.getCharacterDirection());
+
+            mazeDisplayer.redraw();
         }
         keyEvent.consume();
     }
 
     public void solveMaze(ActionEvent event) {
         if (viewModel.getSolution() != null) {
-            viewModel.resetSolution();
-            btn_solveMaze.setText("Solve Maze");
+            resetSolution();
         } else {
             viewModel.solveMaze();
             btn_solveMaze.setText("Hide Solution");
@@ -247,6 +258,12 @@ public class MyViewController implements Observer, IView {
         ArrayList<AState> solution = viewModel.getSolution();
         mazeDisplayer.setSolution(solution);
         mazeDisplayer.redraw();
+    }
+
+    private void resetSolution() {
+        viewModel.resetSolution();
+        mazeDisplayer.setSolution(viewModel.getSolution());
+        btn_solveMaze.setText("Solve Maze");
     }
 
 
@@ -272,5 +289,9 @@ public class MyViewController implements Observer, IView {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Maze files (*.maze)", "*.maze");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser;
+    }
+
+    public void onScroll(ScrollEvent scrollEvent) {
+        mazeDisplayer.changeZoom(scrollEvent.getDeltaY() > 0 ? 1 : -1);
     }
 }
