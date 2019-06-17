@@ -95,6 +95,9 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public boolean isFinished() {
+        if(maze == null)
+            return false;
+
         return characterPositionColumn == maze.getGoalPosition().getColumnIndex() && characterPositionRow == maze.getGoalPosition().getRowIndex();
     }
 
@@ -103,6 +106,7 @@ public class MyModel extends Observable implements IModel {
         LOG.debug("Closing instance");
         stopServers();
         threadPool.shutdown();
+        LogManager.shutdown();
         Platform.exit();
     }
 
