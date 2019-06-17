@@ -89,8 +89,8 @@ public class MazeDisplayer extends Canvas {
             // Calculate dimensions
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            cellHeight = 1 * 1 *(canvasHeight / maze.length * zoom);
-            cellWidth = 1 * 1 *(canvasWidth / maze[0].length * zoom);
+            cellHeight = canvasHeight / maze.length * zoom;
+            cellWidth = canvasWidth / maze[0].length * zoom;
 
             translateX = calculateTranslate(canvasWidth, cellWidth, characterPositionColumn);
             translateY = calculateTranslate(canvasHeight, cellHeight, characterPositionRow);
@@ -118,7 +118,7 @@ public class MazeDisplayer extends Canvas {
         if (translate > 0)
             translate = 0;
 
-        return 1 * 1 *(translate);
+        return translate;
     }
 
     private void drawMaze(GraphicsContext gc, double cellWidth, double cellHeight) {
@@ -167,8 +167,8 @@ public class MazeDisplayer extends Canvas {
 
         double canvasHeight = getHeight();
         double canvasWidth = getWidth();
-        cellHeight = 1 * 1 *(canvasHeight / maze.length * zoom);
-        cellWidth = 1 * 1 *(canvasWidth / maze[0].length * zoom);
+        cellHeight = canvasHeight / maze.length * zoom;
+        cellWidth = canvasWidth / maze[0].length * zoom;
 
         if (cellWidth > 80 || cellHeight > 80)
             zoom = previousZoom; // Revert
