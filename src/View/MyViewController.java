@@ -1,6 +1,7 @@
 package View;
 
 
+import Model.MyModel;
 import Server.Configurations;
 import ViewModel.MyViewModel;
 import algorithms.mazeGenerators.Position;
@@ -35,6 +36,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.io.File;
@@ -45,6 +48,8 @@ import java.util.Observer;
 import java.util.Optional;
 
 public class MyViewController implements Observer {
+    //logger
+    private static final Logger LOG = LogManager.getLogger(MyModel.class);
     //Controls
     public MazeDisplayer mazeDisplayer;
     public javafx.scene.control.TextField txtfld_rowsNum;
@@ -178,8 +183,6 @@ public class MyViewController implements Observer {
         if (result.get() == ButtonType.OK) {
             viewModel.close();
         }
-//        Parent root = FXMLLoader.load(getClass().getResource("exitBox.fxml"));
-//        popABox(root);
     }
 
     public void close(ActionEvent event) {
@@ -252,7 +255,7 @@ public class MyViewController implements Observer {
             rows = Integer.valueOf(txtfld_rowsNum.getText());
             cols = Integer.valueOf(txtfld_columnsNum.getText());
         } catch (NumberFormatException e) {
-            // TODO log
+            LOG.catching(e);
         }
 
         if (viewModel.generateMaze(rows, cols)) {
@@ -276,10 +279,6 @@ public class MyViewController implements Observer {
             dialogPane.getStyleClass().add("myDialog");
             alert.showAndWait();
         }
-    }
-
-    public void mouseTest(MouseEvent mouseEvent) {
-
     }
 
     public void onKeyPressed(KeyEvent keyEvent) {
@@ -351,7 +350,7 @@ public class MyViewController implements Observer {
                 Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start chrome  --kiosk https://www.playdosgames.com/play/dangerous-dave/"});
                 num_click=0;
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.catching(e);
             }
         }
 

@@ -1,11 +1,12 @@
 package View;
 
+import Model.MyModel;
 import Server.Configurations;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -13,9 +14,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Window;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +27,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class proControl implements Initializable {
+    //logger
+    private static final Logger LOG = LogManager.getLogger(MyModel.class);
     @FXML
     ComboBox<String> generatingAlgorithm;
     @FXML
@@ -73,9 +78,6 @@ public class proControl implements Initializable {
         Configurations.prop.setProperty("mute",muteBox.isSelected()?"true":"false");
       updatePro();
     }
-    public void mute(ActionEvent event){
-
-    }
 
     private void updatePro() {
         try{
@@ -85,12 +87,12 @@ public class proControl implements Initializable {
             }
 
             catch(IOException e){
-                e.printStackTrace();
+               LOG.catching(e);
 
             }
         }
         catch (FileNotFoundException e){
-            e.printStackTrace();
+            LOG.catching(e);
         }
     }
 }
