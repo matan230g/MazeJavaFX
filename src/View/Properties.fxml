@@ -14,6 +14,6 @@
       <Label layoutX="31.0" layoutY="51.0" styleClass="Label" text="Maze Generator" />
       <Label layoutX="31.0" layoutY="99.0" prefHeight="27.0" prefWidth="160.0" styleClass="Label" text="Solving Algorithm" />
       <ComboBox fx:id="searchingAlgorithm" layoutX="277.0" layoutY="93.0" prefHeight="39.0" prefWidth="302.0" />
-      <CheckBox fx:id="muteBox" layoutX="486.0" layoutY="247.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="85.0" text="mute" textFill="WHITE" />
+      <CheckBox fx:id="muteBox" layoutX="486.0" layoutY="247.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="85.0" text="mute" styleClass="green-style" />
    </children>
 </AnchorPane>

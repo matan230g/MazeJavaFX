@@ -15,6 +15,7 @@ public class TimerLabel extends Label implements ActionListener {
     public TimerLabel() {
         this.setText("0:00");
         this.setAlignment(Pos.CENTER);
+        this.setStyle(" -fx-text-fill: #00ff00; -fx-font-family: Consolas;");
 
         timer = new Timer(1000, this);
     }

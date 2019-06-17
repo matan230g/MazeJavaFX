@@ -390,4 +390,9 @@ public class MyViewController implements Observer, IView {
         if(isDragActive)
             updateDisplayAfterMove();
     }
+    public void openHelp()throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("help.fxml"));
+        popABox(root,600,400);
+
+    }
 }

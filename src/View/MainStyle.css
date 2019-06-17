@@ -1,9 +1,9 @@
 .root{
-    -fx-background-color: black
-;
+    -fx-background-color: black;
+    -fx-text-fill: #00ff00;
 }
 .menu-item .label {
-    -fx-text-fill: white;
+    -fx-text-fill: #00ff00;
 }
 
 .menu-item:focused {
@@ -11,7 +11,7 @@
 }
 
 .menu-item:focused .label {
-    -fx-text-fill: white;
+    -fx-text-fill: #00ff00;
 }
 
 .context-menu {
@@ -26,7 +26,7 @@
     -fx-border-style: solid;
 }
 .Label {
-    -fx-text-fill: white;
+    -fx-text-fill: #00ff00;
 
 }
 .button{
@@ -57,11 +57,62 @@
 }
 .myDialog:header *.header-panel{
     -fx-background-color: black;
-    -fx-text-fill: white;
 }
 .myDialog:header *.header-panel *.label{
     -fx-font-size: 18px;
-    -fx-font-style: italic;
-    -fx-fill: white;
+    -fx-font-family: Consolas;
+    -fx-text-fill: #00ff00;
 }
+.myDialog > *.label.content{
+     -fx-font-size: 18px;
+     -fx-text-fill: #00ff00;
+    -fx-font-family: Consolas;
+ }
+
+.tab-header-background{
+    -fx-background-color: black;
+}
+.text-area{
+    -fx-control-inner-background:#000000;
+    -fx-font-family: Consolas;
+    -fx-highlight-fill: #00ff00;
+    -fx-highlight-text-fill: #000000;
+    -fx-text-fill: #00ff00;
+    -fx-focus-color: transparent; -fx-text-box-border: transparent;
+}
+.text-area:focused{
+    -fx-faint-focus-color: transparent;
+}
+
+
+.text-area .content{
+    -fx-background-color: black;
+}
+.green-style {
+    -fx-control-inner-background: #000000;
+    -fx-font-family: Consolas;
+    -fx-highlight-fill: #00ff00;
+    -fx-highlight-text-fill: #000000;
+    -fx-text-fill: #00ff00;
+}
+.jfx-tab-pane .tab-selected-line{
+    -fx-border-color: #00ff00;
+}
+.combo-box{
+    -fx-control-inner-background: #000000;
+    -fx-font-family: Consolas;
+    -fx-highlight-fill: #00ff00;
+    -fx-highlight-text-fill: #000000;
+    -fx-text-fill: #00ff00;
+}
+.TimerLabel{
+    -fx-text-fill: #00ff00;
+}
+#textIn{
+    -fx-fill: #00ff00;
+    -fx-font-size:14px;
+}
+.co
+
+
 

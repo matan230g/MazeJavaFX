@@ -14,7 +14,7 @@
             <URL value="@MainStyle.css" />
          </stylesheets></Button>
       <Button layoutX="313.0" layoutY="192.0" mnemonicParsing="false" onAction="#stay" stylesheets="@MainStyle.css" text="No" />
-      <Text fill="WHITE" layoutX="58.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="Are you sure you want to exit the application?" wrappingWidth="334.73291015625">
+      <Text fill="WHITE" layoutX="58.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="green-style" text="Are you sure you want to exit the application?" wrappingWidth="334.73291015625">
          <font>
             <Font size="32.0" />
          </font>

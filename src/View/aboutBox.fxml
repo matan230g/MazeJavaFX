@@ -22,7 +22,11 @@
       </graphic>
     </Button>
       <Button layoutX="177.0" layoutY="161.0" mnemonicParsing="false" onAction="#stay" stylesheets="@MainStyle.css" text="Exit" />
-      <Text fill="WHITE" layoutX="56.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="The maze style was inspired by Dangerous Dave game.A 1988 computer game by John Romero. It was developed for the Apple II and MS-DOS as an example game to accompany his article about his GraBASICCreators: Matan Gadasi &amp; Eitan Fedenko" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="288.0">
+      <Text style=" -fx-control-inner-background:#000000;
+    -fx-font-family: Consolas;
+    -fx-highlight-fill: #00ff00;
+    -fx-highlight-text-fill: #000000;
+    -fx-text-fill: #00ff00;" fill="#00ff00" layoutX="56.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="The maze style was inspired by Dangerous Dave game.A 1988 computer game by John Romero. It was developed for the Apple II and MS-DOS as an example game to accompany his article about his GraBASICCreators: Matan Gadasi &amp; Eitan Fedenko" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="288.0">
          <font>
             <Font size="14.0" />
          </font>
