@@ -17,12 +17,17 @@ import java.util.ArrayList;
 
 public class MazeDisplayer extends Canvas {
     private final double ZOOM_FACTOR = 0.2;
-    // Assets
+    // Asset Properties
+    private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
+    private StringProperty ImageFileNameWall = new SimpleStringProperty();
+    private StringProperty imageFileNameSolution = new SimpleStringProperty();
+    private StringProperty ImageFileNameGoal = new SimpleStringProperty();
     private Image wallImage;
     private Image characterImage;
     private Image goalImage;
+    private Image solutionImage;
 
-    // Properties
+    // Calculation Properties
     private boolean assetsLoaded;
     private int[][] maze;
     private int characterPositionRow;
@@ -32,7 +37,7 @@ public class MazeDisplayer extends Canvas {
     private ArrayList<AState> solution;
     private double zoom = 1;
     private double cellWidth, cellHeight;
-    double translateX, translateY;
+    private double translateX, translateY;
     private int characterDirection = 1;
 
     public MazeDisplayer() {
@@ -41,8 +46,9 @@ public class MazeDisplayer extends Canvas {
 
     private void loadAssets() {
         try {
-            wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
             characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
+            wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
+            solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
             goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
             assetsLoaded = true;
         } catch (FileNotFoundException e) {
@@ -132,44 +138,9 @@ public class MazeDisplayer extends Canvas {
             col = m.getPosition().getColumnIndex();
             if (row == goalPositionRow && col == goalPositionColumn || row == characterPositionRow && col == characterPositionColumn)
                 continue; // Don't draw above character or goal
-            gc.setFill(Color.GREEN);
-            gc.fillRect(col * cellWidth + translateX, row * cellHeight + translateY, Math.ceil(cellWidth), Math.ceil(cellHeight));
+
+            gc.drawImage(solutionImage, col * cellWidth + translateX, row * cellHeight + translateY, cellWidth, cellHeight);
         }
-    }
-
-    //region Properties
-    private StringProperty ImageFileNameWall = new SimpleStringProperty();
-    private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
-    private StringProperty ImageFileNameGoal = new SimpleStringProperty();
-
-    public String getImageFileNameWall() {
-        return ImageFileNameWall.get();
-    }
-
-    public void setImageFileNameWall(String imageFileNameWall) {
-        this.ImageFileNameWall.set(imageFileNameWall);
-    }
-
-    public String getImageFileNameCharacter() {
-        return ImageFileNameCharacter.get();
-    }
-
-    public void setImageFileNameCharacter(String imageFileNameCharacter) {
-        this.ImageFileNameCharacter.set(imageFileNameCharacter);
-    }
-
-    public String getImageFileNameGoal() {
-        return ImageFileNameGoal.get();
-    }
-
-    public void setImageFileNameGoal(String imageFileNameGoal) {
-        this.ImageFileNameGoal.set(imageFileNameGoal);
-    }
-    //endregion
-
-    public void changeSize() {
-        this.setScaleX(150);
-        this.setScaleY(150);
     }
 
     public void cleanDraw() {
@@ -183,7 +154,7 @@ public class MazeDisplayer extends Canvas {
         zoom = 1;
     }
 
-    public double changeZoom(int delta) {
+    public void changeZoom(int delta) {
         double previousZoom = zoom;
         zoom += delta * ZOOM_FACTOR;
 
@@ -200,8 +171,6 @@ public class MazeDisplayer extends Canvas {
 
         if (zoom != previousZoom)
             redraw();
-
-        return zoom;
     }
 
     public void setCharacterDirection(int characterDirection) {
@@ -213,4 +182,54 @@ public class MazeDisplayer extends Canvas {
         int row = (int) ((y - translateY) / cellHeight);
         return new Position(row, col);
     }
+
+    //region Getters and Setters
+    public String getImageFileNameCharacter() {
+        return ImageFileNameCharacter.get();
+    }
+
+    public StringProperty imageFileNameCharacterProperty() {
+        return ImageFileNameCharacter;
+    }
+
+    public void setImageFileNameCharacter(String imageFileNameCharacter) {
+        this.ImageFileNameCharacter.set(imageFileNameCharacter);
+    }
+
+    public String getImageFileNameWall() {
+        return ImageFileNameWall.get();
+    }
+
+    public StringProperty imageFileNameWallProperty() {
+        return ImageFileNameWall;
+    }
+
+    public void setImageFileNameWall(String imageFileNameWall) {
+        this.ImageFileNameWall.set(imageFileNameWall);
+    }
+
+    public String getImageFileNameSolution() {
+        return imageFileNameSolution.get();
+    }
+
+    public StringProperty imageFileNameSolutionProperty() {
+        return imageFileNameSolution;
+    }
+
+    public void setImageFileNameSolution(String imageFileNameSolution) {
+        this.imageFileNameSolution.set(imageFileNameSolution);
+    }
+
+    public String getImageFileNameGoal() {
+        return ImageFileNameGoal.get();
+    }
+
+    public StringProperty imageFileNameGoalProperty() {
+        return ImageFileNameGoal;
+    }
+
+    public void setImageFileNameGoal(String imageFileNameGoal) {
+        this.ImageFileNameGoal.set(imageFileNameGoal);
+    }
+    //endregion
 }

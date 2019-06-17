@@ -19,20 +19,24 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.Pane?>
-<BorderPane fx:id="board"  style="-fx-background-color: #111111;"  onMousePressed="#mousePress" onMouseReleased="#mouseRelease" onMouseDragged="#mouseMove"
+<BorderPane fx:id="board" style="-fx-background-color: #111111;" onMousePressed="#mousePress"
+            onMouseReleased="#mouseRelease" onMouseDragged="#mouseMove"
             maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="900.0" prefWidth="900.0"
             xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="View.MyViewController">
     <center>
-        <StackPane>
-            <MazeDisplayer fx:id="mazeDisplayer" height="450.0" imageFileNameCharacter="resources/Images/dave.png"
+        <StackPane fx:id="mazeWrapper">
+            <MazeDisplayer fx:id="mazeDisplayer"
+                           imageFileNameCharacter="resources/Images/dave.png"
+                           imageFileNameWall="resources/Images/redTile.png"
+                           imageFileNameSolution="resources/Images/diamond.png"
                            imageFileNameGoal="resources/Images/door.png"
-                           imageFileNameWall="resources/Images/redTile.png" onScroll="#onScroll" width="445.0"
-                           BorderPane.alignment="CENTER"/>
+                           onScroll="#onScroll" BorderPane.alignment="CENTER"
+                           height="680.0" width="680.0"/>
 
-            <ImageView fx:id="victoryScreen" visible="false" fitHeight="450.0" fitWidth="445.0" pickOnBounds="true"
-                       preserveRatio="true">
+            <ImageView fx:id="victoryScreen" visible="false" pickOnBounds="true" preserveRatio="true"
+                       fitHeight="680.0" fitWidth="680.0">
                 <Image url="images/youWin.gif"/>
             </ImageView>
         </StackPane>
@@ -68,7 +72,7 @@
         </MenuBar>
     </top>
     <left>
-        <VBox prefHeight="400.0" prefWidth="201.0" BorderPane.alignment="CENTER">
+        <VBox prefHeight="400.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
                 <GridPane>
                     <columnConstraints>

@@ -14,15 +14,19 @@ import java.util.Observer;
  * Created by Aviadjo on 6/14/2017.
  */
 public class MyViewModel extends Observable implements Observer {
+    private final int GAME_BOARD_PADDING = 20;
 
     private IModel model;
     private boolean isCtrlPressed;
-    boolean mouseDragActive;
+    private boolean mouseDragActive;
+    private int wrapperWidth, wrapperHeight;
 
     public MyViewModel(IModel model) {
         this.model = model;
         mouseDragActive = false;
         isCtrlPressed = false;
+        wrapperHeight = 900;
+        wrapperWidth = 700;
     }
 
 
@@ -135,17 +139,33 @@ public class MyViewModel extends Observable implements Observer {
     }
 
 
-    public void mouseMove(Position position) {
-        if (!mouseDragActive)
-            return;
+    /**
+     * @return Is Drag active
+     */
+    public boolean mouseMove(Position position) {
+        if (mouseDragActive) {
+            if (position.getRowIndex() > getCharacterPositionRow())
+                model.moveCharacter(KeyCode.NUMPAD2);
+            if (position.getRowIndex() < getCharacterPositionRow())
+                model.moveCharacter(KeyCode.NUMPAD8);
+            if (position.getColumnIndex() < getCharacterPositionColumn())
+                model.moveCharacter(KeyCode.NUMPAD4);
+            if (position.getColumnIndex() > getCharacterPositionColumn())
+                model.moveCharacter(KeyCode.NUMPAD6);
+        }
 
-        if (position.getRowIndex() > getCharacterPositionRow())
-            model.moveCharacter(KeyCode.NUMPAD2);
-        if (position.getRowIndex() < getCharacterPositionRow())
-            model.moveCharacter(KeyCode.NUMPAD8);
-        if (position.getColumnIndex() < getCharacterPositionColumn())
-            model.moveCharacter(KeyCode.NUMPAD4);
-        if (position.getColumnIndex() > getCharacterPositionColumn())
-            model.moveCharacter(KeyCode.NUMPAD6);
+        return mouseDragActive;
+    }
+
+    public int setWrapperWidth(int newValue) {
+        wrapperWidth = newValue;
+
+        return Math.min(wrapperWidth, wrapperHeight) - GAME_BOARD_PADDING;
+    }
+
+    public int setWrapperHeight(int newValue) {
+        wrapperHeight = newValue;
+
+        return Math.min(wrapperWidth, wrapperHeight) - GAME_BOARD_PADDING;
     }
 }
