@@ -18,74 +18,99 @@
 
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.StackPane?>
-<BorderPane fx:id="board" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed"  onKeyReleased="#onKeyReleased" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
-   <center>
-       <StackPane>
-           <MazeDisplayer fx:id="mazeDisplayer" height="450.0" imageFileNameCharacter="resources/Images/dave.png" imageFileNameGoal="resources/Images/door.png" imageFileNameWall="resources/Images/redTile.png" onScroll="#onScroll" width="445.0" BorderPane.alignment="CENTER" />
+<?import javafx.scene.layout.Pane?>
+<BorderPane fx:id="board" style="-fx-background-color: #111111;" onMousePressed="#mousePress"
+            onMouseReleased="#mouseRelease" onMouseDragged="#mouseMove"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="900.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="View.MyViewController">
+    <center>
+        <StackPane fx:id="mazeWrapper">
+            <MazeDisplayer fx:id="mazeDisplayer"
+                           imageFileNameCharacter="resources/Images/dave.png"
+                           imageFileNameWall="resources/Images/redTile.png"
+                           imageFileNameSolution="resources/Images/diamond.png"
+                           imageFileNameGoal="resources/Images/door.png"
+                           onScroll="#onScroll" BorderPane.alignment="CENTER"
+                           height="680.0" width="680.0"/>
 
-           <ImageView fx:id="victoryScreen" visible="false" fitHeight="450.0" fitWidth="445.0" pickOnBounds="true" preserveRatio="true">
-               <Image url="images/youWin.gif"/>
-           </ImageView>
-       </StackPane>
-   </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#newFile" text="New" />
-                  <MenuItem fx:id="menuItem_save" disable="true" mnemonicParsing="false" onAction="#saveMaze" text="Save" />
-                  <MenuItem mnemonicParsing="false" onAction="#openFile" text="Load" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Options">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#properties" text="Properties" />
-            </items>
-          </Menu>
-            <Menu text="Exit">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#handleCloseButtonAction" text="Exit" />
-               </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Help" />
-            <Menu mnemonicParsing="false" text="About">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
-               </items>
-            </Menu>
-        </menus>
-      </MenuBar>
-   </top>
-   <left>
-      <VBox prefHeight="400.0" prefWidth="201.0" BorderPane.alignment="CENTER">
-         <children>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="168.0" minWidth="10.0" prefWidth="124.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="77.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="202.0" minHeight="0.0" prefHeight="66.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="355.0" minHeight="51.0" prefHeight="71.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="355.0" minHeight="51.0" prefHeight="71.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="355.0" minHeight="51.0" prefHeight="71.0" vgrow="SOMETIMES" />
-                  <RowConstraints />
-              </rowConstraints>
-               <children>
-                  <Text fill="#f8f8f8" strokeType="OUTSIDE" strokeWidth="0.0" text="Maze row" textAlignment="CENTER" wrappingWidth="93.68017578125" />
-                  <Text fill="WHITE" layoutX="10.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maze colums" textAlignment="CENTER" wrappingWidth="107.96044921875" GridPane.rowIndex="1" />
-                   <TextField fx:id="txtfld_rowsNum" disable="false" text="20" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                   <TextField fx:id="txtfld_columnsNum" disable="false" text="20" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                   <Button fx:id="btn_generateMaze" onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="Generate Maze" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                   <Button fx:id="btn_solveMaze" cancelButton="true" disable="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                   <TimerLabel fx:id="timer" prefHeight="40.0" prefWidth="Infinity" textFill="WHITE" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
-                     <font>
-                        <Font size="22.0" />
-                     </font></TimerLabel>
-               </children>
-            </GridPane>
-         </children>
-      </VBox>
-   </left>
+            <ImageView fx:id="victoryScreen" visible="false" pickOnBounds="true" preserveRatio="true"
+                       fitHeight="680.0" fitWidth="680.0">
+                <Image url="images/youWin.gif"/>
+            </ImageView>
+        </StackPane>
+    </center>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#newFile" text="New"/>
+                        <MenuItem fx:id="menuItem_save" disable="true" mnemonicParsing="false" onAction="#saveMaze"
+                                  text="Save"/>
+                        <MenuItem mnemonicParsing="false" onAction="#openFile" text="Load"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Options">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#properties" text="Properties"/>
+                    </items>
+                </Menu>
+                <Menu text="Exit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleCloseButtonAction" text="Exit"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help"/>
+                <Menu mnemonicParsing="false" text="About">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <left>
+        <VBox prefHeight="400.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="168.0" minWidth="10.0" prefWidth="124.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="77.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="202.0" minHeight="0.0" prefHeight="66.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="355.0" minHeight="51.0" prefHeight="71.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="355.0" minHeight="51.0" prefHeight="71.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="355.0" minHeight="51.0" prefHeight="71.0" vgrow="SOMETIMES"/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                    <children>
+                        <Text fill="#f8f8f8" strokeType="OUTSIDE" strokeWidth="0.0" text="Maze row"
+                              textAlignment="CENTER" wrappingWidth="93.68017578125"/>
+                        <Text fill="WHITE" layoutX="10.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                              text="Maze colums" textAlignment="CENTER" wrappingWidth="107.96044921875"
+                              GridPane.rowIndex="1"/>
+                        <TextField fx:id="txtfld_rowsNum" disable="false" text="20" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="0"/>
+                        <TextField fx:id="txtfld_columnsNum" disable="false" text="20" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1"/>
+                        <Button fx:id="btn_generateMaze" onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0"
+                                text="Generate Maze" GridPane.columnIndex="0" GridPane.columnSpan="2"
+                                GridPane.rowIndex="2"/>
+                        <Button fx:id="btn_solveMaze" cancelButton="true" disable="true" onAction="#solveMaze"
+                                prefHeight="25.0" prefWidth="167.0" text="Solve Maze" GridPane.columnIndex="0"
+                                GridPane.columnSpan="2" GridPane.rowIndex="3"/>
+                        <TimerLabel fx:id="timer" prefHeight="40.0" prefWidth="Infinity" textFill="WHITE"
+                                    GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                            <font>
+                                <Font size="22.0"/>
+                            </font>
+                        </TimerLabel>
+                    </children>
+                </GridPane>
+            </children>
+        </VBox>
+    </left>
 </BorderPane>

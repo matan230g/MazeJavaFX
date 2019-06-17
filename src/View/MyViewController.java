@@ -3,6 +3,7 @@ package View;
 
 import Server.Configurations;
 import ViewModel.MyViewModel;
+import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -11,6 +12,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +25,8 @@ import javafx.scene.input.KeyEvent;
 
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -60,6 +64,8 @@ public class MyViewController implements Observer, IView {
     public StringProperty goalPositionColumn = new SimpleStringProperty("1");
     public StringProperty goalPositionRow = new SimpleStringProperty("1");
     public ImageView victoryScreen;
+    public StackPane mazeWrapper;
+    public BorderPane board;
 
 
     @FXML
@@ -72,8 +78,10 @@ public class MyViewController implements Observer, IView {
         this.viewModel = viewModel;
         this.mainScene = mainScene;
         this.mainStage = mainStage;
+        mainStage.setMinHeight(400);
+        mainStage.setMinWidth(400);
         bindProperties();
-        //setResizeEvent();
+        setResizeEvent();
     }
 
 
@@ -86,14 +94,33 @@ public class MyViewController implements Observer, IView {
 
     public void setResizeEvent() {
         this.mainScene.widthProperty().addListener((observable, oldValue, newValue) -> {
-            //mazeDisplayer.redraw();
-            System.out.println("Width: " + newValue);
+            board.setPrefWidth(newValue.doubleValue());
         });
 
         this.mainScene.heightProperty().addListener((observable, oldValue, newValue) -> {
-            //mazeDisplayer.redraw();
-            System.out.println("Height: " + newValue);
+            board.setPrefHeight(newValue.doubleValue());
         });
+
+        this.mazeWrapper.widthProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Width: " + newValue);
+            int newSize = viewModel.setWrapperWidth(newValue.intValue());
+            resizeBoard(newSize);
+            mazeDisplayer.redraw();
+        });
+
+        this.mazeWrapper.heightProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Height: " + newValue);
+            int newSize = viewModel.setWrapperHeight(newValue.intValue());
+            resizeBoard(newSize);
+            mazeDisplayer.redraw();
+        });
+    }
+
+    private void resizeBoard(int newSize) {
+        mazeDisplayer.setHeight(newSize);
+        mazeDisplayer.setWidth(newSize);
+        victoryScreen.setFitHeight(newSize);
+        victoryScreen.setFitWidth(newSize);
     }
 
     public void newFile(ActionEvent event) {
@@ -257,13 +284,17 @@ public class MyViewController implements Observer, IView {
     public void onKeyPressed(KeyEvent keyEvent) {
         if (!viewModel.isFinished()) {
             viewModel.keyPressed(keyEvent.getCode());
-            ArrayList<AState> solution = viewModel.getSolution();
-            mazeDisplayer.setSolution(solution);
-            mazeDisplayer.setCharacterDirection(viewModel.getCharacterDirection());
-
-            mazeDisplayer.redraw();
+            updateDisplayAfterMove();
         }
         keyEvent.consume();
+    }
+
+    private void updateDisplayAfterMove() {
+        ArrayList<AState> solution = viewModel.getSolution();
+        mazeDisplayer.setSolution(solution);
+        mazeDisplayer.setCharacterDirection(viewModel.getCharacterDirection());
+
+        mazeDisplayer.redraw();
     }
 
     public void onKeyReleased(KeyEvent keyEvent) {
@@ -329,5 +360,33 @@ public class MyViewController implements Observer, IView {
     public void onScroll(ScrollEvent scrollEvent) {
         if (viewModel.isCtrlPressed())
             mazeDisplayer.changeZoom(scrollEvent.getDeltaY() > 0 ? 1 : -1);
+    }
+
+
+    public void mousePress(MouseEvent mouseEvent) {
+        Bounds bounds = mazeDisplayer.localToScene(mazeDisplayer.getBoundsInLocal());
+        double x = mouseEvent.getX() - bounds.getMinX();
+        double y = mouseEvent.getY() - bounds.getMinY();
+        Position clickPos = mazeDisplayer.projectClickToTile(x, y);
+        viewModel.mousePress(clickPos);
+    }
+
+    public void mouseRelease(MouseEvent mouseEvent) {
+        viewModel.mouseRelease();
+        mazeDisplayer.redraw();
+    }
+
+    public void mouseMove(MouseEvent mouseEvent) {
+        if (viewModel.isFinished())
+            return;
+
+        Bounds bounds = mazeDisplayer.localToScene(mazeDisplayer.getBoundsInLocal());
+        double x = mouseEvent.getX() - bounds.getMinX();
+        double y = mouseEvent.getY() - bounds.getMinY();
+        Position mousePos = mazeDisplayer.projectClickToTile(x, y);
+        boolean isDragActive = viewModel.mouseMove(mousePos);
+
+        if(isDragActive)
+            updateDisplayAfterMove();
     }
 }
