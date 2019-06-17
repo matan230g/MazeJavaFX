@@ -1,5 +1,6 @@
 package View;
 
+import Model.MyModel;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import algorithms.search.MazeState;
@@ -10,12 +11,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MazeDisplayer extends Canvas {
+    private static final Logger LOG = LogManager.getLogger(MyModel.class);
     private final double ZOOM_FACTOR = 0.2;
     // Asset Properties
     private StringProperty ImageFileNameCharacter = new SimpleStringProperty();
@@ -52,7 +56,7 @@ public class MazeDisplayer extends Canvas {
             goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
             assetsLoaded = true;
         } catch (FileNotFoundException e) {
-            //e.printStackTrace();
+            LOG.catching(e);
         }
     }
 

@@ -324,7 +324,7 @@ public class MyModel extends Observable implements IModel {
             out.flush();
             out.close();
         } catch (IOException var8) {
-            var8.printStackTrace();
+            LOG.catching(var8);
         }
     }
 
