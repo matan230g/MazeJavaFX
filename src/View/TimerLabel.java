@@ -3,11 +3,10 @@ package View;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.TimerTask;
+
 
 public class TimerLabel extends Label implements ActionListener {
     int seconds = 0;

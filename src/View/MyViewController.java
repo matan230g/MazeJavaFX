@@ -123,8 +123,9 @@ public class MyViewController implements Observer, IView {
         victoryScreen.setFitWidth(newSize);
     }
 
-    public void newFile(ActionEvent event) {
+    public void newFile() {
         mazeDisplayer.cleanDraw();
+        timer.stop();
         btn_solveMaze.setDisable(true);
         menuItem_save.setDisable(true);
     }

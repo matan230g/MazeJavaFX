@@ -7,9 +7,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane id="box" fx:id="box" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#backDoor" prefHeight="250.0" prefWidth="400.0" styleClass="popBox" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<Pane id="box" fx:id="box" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="400.0" styleClass="popBox" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <children>
-    <Button layoutX="35.0" layoutY="139.0" mnemonicParsing="false" onAction="#backDoor" prefHeight="51.0" prefWidth="77.0" text="&#10;">
+    <Button  onAction="#backDoor" layoutX="35.0" layoutY="139.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="77.0" text="&#10;">
       <font>
         <Font size="30.0" />
       </font>
@@ -22,9 +22,9 @@
       </graphic>
     </Button>
       <Button layoutX="177.0" layoutY="161.0" mnemonicParsing="false" onAction="#stay" stylesheets="@MainStyle.css" text="Exit" />
-      <Text fill="WHITE" layoutX="56.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="The maze style was inspired by Dangerous Dave game.A 1988 computer game by John Romero. It was developed for the Apple II and MS-DOS as an example game to accompany his article about his GraBASICCreators: Matan Gadasi &amp; Eitan Fedenko" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="288.0">
+      <Text fill="WHITE" layoutX="56.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="label" text="The maze style was inspired by Dangerous Dave game.A 1988 computer game by John Romero. It was developed for the Apple II and MS-DOS as an example game to accompany his article about his GraBASICCreators: Matan Gadasi &amp; Eitan Fedenko" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="288.0">
          <font>
-            <Font size="11.0" />
+            <Font size="14.0" />
          </font>
       </Text>
    </children>
