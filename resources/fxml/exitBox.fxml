@@ -6,14 +6,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="252.0" prefWidth="451.0" styleClass="popBox" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="252.0" prefWidth="451.0" styleClass="popBox" stylesheets="@../css/MainStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <children>
       <Button layoutX="102.0" layoutY="192.0" mnemonicParsing="false" onAction="#close" text="Yes">
          <stylesheets>
-            <URL value="@MainStyle.css" />
-            <URL value="@MainStyle.css" />
+            <URL value="@../css/MainStyle.css" />
+            <URL value="@../css/MainStyle.css" />
          </stylesheets></Button>
-      <Button layoutX="313.0" layoutY="192.0" mnemonicParsing="false" onAction="#stay" stylesheets="@MainStyle.css" text="No" />
+      <Button layoutX="313.0" layoutY="192.0" mnemonicParsing="false" onAction="#stay" stylesheets="@../css/MainStyle.css" text="No" />
       <Text fill="WHITE" layoutX="58.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="green-style" text="Are you sure you want to exit the application?" wrappingWidth="334.73291015625">
          <font>
             <Font size="32.0" />

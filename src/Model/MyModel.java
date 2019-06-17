@@ -15,6 +15,8 @@ import algorithms.search.MazeState;
 import algorithms.search.Solution;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import test.RunCommunicateWithServers;
 
 import java.io.*;
@@ -32,27 +34,34 @@ import java.util.concurrent.TimeUnit;
  * Created by Aviadjo on 6/14/2017.
  */
 public class MyModel extends Observable implements IModel {
+    private static final Logger LOG = LogManager.getLogger(MyModel.class);
 
-    private ExecutorService threadPool = Executors.newCachedThreadPool();
+    private ExecutorService threadPool;
 
-    Server mazeGeneratingServer;
-    Server solveSearchProblemServer;
+    private Server mazeGeneratingServer;
+    private Server solveSearchProblemServer;
 
-    ArrayList<AState> mazeSolutionSteps = null;
+    private ArrayList<AState> mazeSolutionSteps = null;
 
     private Maze maze;
     private int characterPositionRow;
     private int characterPositionColumn;
     private int characterDirection = 1;
 
+    public MyModel() {
+        threadPool = Executors.newCachedThreadPool();
+    }
+
     public void startServers() {
         mazeGeneratingServer = new Server(5400, 1000, new ServerStrategyGenerateMaze());
         solveSearchProblemServer = new Server(5401, 1000, new ServerStrategySolveSearchProblem());
-        solveSearchProblemServer.start();
+        LOG.debug("Starting maze generation server");
         mazeGeneratingServer.start();
+        LOG.debug("Starting maze solution server");
+        solveSearchProblemServer.start();
     }
 
-    public void stopServers() {
+    private void stopServers() {
         solveSearchProblemServer.stop();
         mazeGeneratingServer.stop();
     }
@@ -91,17 +100,15 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void close() {
-        System.out.println("exit preforme");
+        LOG.debug("Closing instance");
         stopServers();
         threadPool.shutdown();
-//        setChanged();
-//        notifyObservers();
         Platform.exit();
-
     }
 
     @Override
     public void generateMaze(int rows, int cols) {
+        LOG.debug("Generating maze");
         try {
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
@@ -121,7 +128,7 @@ public class MyModel extends Observable implements IModel {
                         characterPositionRow = maze.getStartPosition().getRowIndex();
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.catching(e);
                     }
 
                     setChanged(); //Raise a flag that I have changed
@@ -130,7 +137,7 @@ public class MyModel extends Observable implements IModel {
             });
             client.communicateWithServer();
         } catch (UnknownHostException e2) {
-            e2.printStackTrace();
+            LOG.catching(e2);
         }
     }
 
@@ -153,13 +160,13 @@ public class MyModel extends Observable implements IModel {
                         setChanged();
                         notifyObservers();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.catching(e);
                     }
                 }
             });
             client.communicateWithServer();
         } catch (UnknownHostException e2) {
-            e2.printStackTrace();
+            LOG.catching(e2);
         }
     }
 
@@ -278,7 +285,7 @@ public class MyModel extends Observable implements IModel {
             addToSolution(row, col);
     }
 
-    void addToSolution(int row, int col) {
+    private void addToSolution(int row, int col) {
         MazeState newState = new MazeState(new Position(row, col));
         ArrayList<AState> newSolution = new ArrayList<>();
         newSolution.add(newState);
@@ -288,6 +295,10 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void openFile(File file) {
+        if(file == null)
+            return;
+
+        LOG.info("Opening file - " + file.getPath());
         byte[] savedMazeBytes = new byte[10000];
         try {
             FileInputStream loadFile = new FileInputStream(file);
@@ -302,12 +313,11 @@ public class MyModel extends Observable implements IModel {
         } catch (IOException var7) {
             var7.printStackTrace();
         }
-
-
     }
 
     @Override
     public void saveMaze(String path) {
+        LOG.info("Saving file - " + path);
         try {
             OutputStream out = new MyCompressorOutputStream(new FileOutputStream(path));
             out.write(maze.toByteArray());
@@ -316,7 +326,6 @@ public class MyModel extends Observable implements IModel {
         } catch (IOException var8) {
             var8.printStackTrace();
         }
-
     }
 
     @Override

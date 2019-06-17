@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<AnchorPane stylesheets="@../css/MainStyle.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <children>
       <JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <tabs>
@@ -22,7 +22,7 @@
                               <Image url="images/numeric_keypad.gif" />
                            </image>
                         </ImageView>
-                        <TextArea editable="false" layoutX="-3.0" layoutY="8.0" prefHeight="339.0" prefWidth="376.0" stylesheets="@MainStyle.css" text="To move the player right press 6&#10;to move the player left press 4&#10;to move the player up press 8&#10;to move the player down press 2&#10;to move diagonal movement up and right press 9&#10;to move diagonal movement up and left press 7&#10;to move diagonal movement down and left press 1&#10;to move diagonal movement down and right press 3&#10;zoom in/out with the Mouse wheel up/down and Ctrl&#10;&#10;">
+                        <TextArea editable="false" layoutX="-3.0" layoutY="8.0" prefHeight="339.0" prefWidth="376.0" stylesheets="@../css/MainStyle.css" text="To move the player right press 6&#10;to move the player left press 4&#10;to move the player up press 8&#10;to move the player down press 2&#10;to move diagonal movement up and right press 9&#10;to move diagonal movement up and left press 7&#10;to move diagonal movement down and left press 1&#10;to move diagonal movement down and right press 3&#10;zoom in/out with the Mouse wheel up/down and Ctrl&#10;&#10;">
                            <cursor>
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
@@ -33,7 +33,7 @@
             </Tab>
             <Tab text="Options  ">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="619.0" stylesheets="@MainStyle.css">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="619.0" stylesheets="@../css/MainStyle.css">
                      <children>
                         <TextArea editable="false" layoutX="-6.0" prefHeight="296.0" prefWidth="486.0" text="There is option to change the maze generator &#10;and the maze solve. &#10;You can change between Best First Search, Depth First Search &#10;and Breadth First Search.&#10;You can generate Empty Maze and regular Maze&#10;There is checkbox to mute the background music  &#10; ">
                            <cursor>

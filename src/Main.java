@@ -1,12 +1,10 @@
-package View;
-
 import Model.MyModel;
+import View.MyViewController;
 import ViewModel.MyViewModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 
 
@@ -26,10 +24,10 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader();
         MyViewModel viewModel = new MyViewModel(model);
         model.addObserver(viewModel);
-        Parent root = fxmlLoader.load(getClass().getResource("MyView.fxml").openStream());
+        Parent root = fxmlLoader.load(getClass().getResource("/fxml/MyView.fxml").openStream());
         setPrimaryStage(primaryStage);
         Scene scene=new Scene(root, 900, 900);
-        scene.getStylesheets().add("View/MainStyle.css");
+        scene.getStylesheets().add("/css/MainStyle.css");
         primaryStage.setScene(scene);
         primaryStage.setTitle("Dangerous Dave");
         MyViewController view = fxmlLoader.getController();

@@ -44,7 +44,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 
-public class MyViewController implements Observer, IView {
+public class MyViewController implements Observer {
     //Controls
     public MazeDisplayer mazeDisplayer;
     public javafx.scene.control.TextField txtfld_rowsNum;
@@ -171,7 +171,7 @@ public class MyViewController implements Observer, IView {
         alert.setContentText("Are you sure you want to exit the application?");
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(
-                getClass().getResource("MainStyle.css").toExternalForm());
+                getClass().getResource("/css/MainStyle.css").toExternalForm());
         dialogPane.getStyleClass().add("myDialog");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -194,12 +194,12 @@ public class MyViewController implements Observer, IView {
     }
 
     public void about(ActionEvent event) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("aboutBox.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/aboutBox.fxml"));
         popABox(root);
     }
 
     public void properties(ActionEvent event) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Properties.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Properties.fxml"));
         Stage box = popABox(root, 600, 400);
         box.setOnHiding(e -> {
             String mute_off=Configurations.prop.getProperty("mute");
@@ -391,7 +391,7 @@ public class MyViewController implements Observer, IView {
             updateDisplayAfterMove();
     }
     public void openHelp()throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("help.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/help.fxml"));
         popABox(root,600,400);
 
     }

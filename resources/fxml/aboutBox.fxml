@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane id="box" fx:id="box" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="400.0" styleClass="popBox" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
+<Pane id="box" fx:id="box" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="400.0" styleClass="popBox" stylesheets="@../css/MainStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
    <children>
     <Button  onAction="#backDoor" layoutX="35.0" layoutY="139.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="77.0" text="&#10;">
       <font>
@@ -21,7 +21,7 @@
         </ImageView>
       </graphic>
     </Button>
-      <Button layoutX="177.0" layoutY="161.0" mnemonicParsing="false" onAction="#stay" stylesheets="@MainStyle.css" text="Exit" />
+      <Button layoutX="177.0" layoutY="161.0" mnemonicParsing="false" onAction="#stay" stylesheets="@../css/MainStyle.css" text="Exit" />
       <Text style=" -fx-control-inner-background:#000000;
     -fx-font-family: Consolas;
     -fx-highlight-fill: #00ff00;
