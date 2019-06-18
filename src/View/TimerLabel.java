@@ -32,6 +32,14 @@ public class TimerLabel extends Label implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         seconds++;
-        Platform.runLater(() -> TimerLabel.this.setText(String.format("%d:%02d",seconds / 60,seconds % 60)));
+        Platform.runLater(() -> TimerLabel.this.setText(getTimeString()));
+    }
+
+    public String getTimeString() {
+        return String.format("%d:%02d",seconds / 60,seconds % 60);
+    }
+
+    public boolean isRunning() {
+        return timer.isRunning();
     }
 }

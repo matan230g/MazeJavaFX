@@ -7,6 +7,7 @@ import Server.ServerStrategyGenerateMaze;
 import Server.ServerStrategySolveSearchProblem;
 import IO.MyDecompressorInputStream;
 import Server.Server;
+import Server.Configurations;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.MyMazeGenerator;
 import algorithms.mazeGenerators.Position;
@@ -95,7 +96,7 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public boolean isFinished() {
-        if(maze == null)
+        if (maze == null)
             return false;
 
         return characterPositionColumn == maze.getGoalPosition().getColumnIndex() && characterPositionRow == maze.getGoalPosition().getRowIndex();
@@ -115,12 +116,16 @@ public class MyModel extends Observable implements IModel {
         LOG.debug("Generating maze");
         try {
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
+                private final Logger SERVER_LOG = LogManager.getLogger("ServerLog");
+
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         toServer.flush();
                         int[] mazeDimensions = new int[]{rows, cols};
+                        String generatorName = Configurations.getMazeGenerator().getClass().getName();
+                        SERVER_LOG.info(String.format("Generating maze of size [%d,%d], using algorithm [%s]", rows, cols, generatorName.substring(generatorName.lastIndexOf('.') + 1)));
                         toServer.writeObject(mazeDimensions);
                         toServer.flush();
                         byte[] compressedMaze = (byte[]) fromServer.readObject();
@@ -130,7 +135,7 @@ public class MyModel extends Observable implements IModel {
                         maze = new Maze(decompressedMaze);
                         characterPositionColumn = maze.getStartPosition().getColumnIndex();
                         characterPositionRow = maze.getStartPosition().getRowIndex();
-
+                        SERVER_LOG.info(String.format("Maze generated. Start position: %s, Goal position: %s", maze.getStartPosition(), maze.getGoalPosition()));
                     } catch (Exception e) {
                         LOG.catching(e);
                     }
@@ -149,15 +154,19 @@ public class MyModel extends Observable implements IModel {
     public void solveMaze() {
         try {
             Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
+                private final Logger SERVER_LOG = LogManager.getLogger("ServerLog");
+
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
                     try {
                         ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
                         ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
                         toServer.flush();
                         maze.setStartPosition(new Position(characterPositionRow, characterPositionColumn));
+                        SERVER_LOG.info(String.format("Solving maze of size [%d,%d], using algorithm [%s]", maze.getNumOfRows(), maze.getNumOfColumns(), Configurations.getSearchingAlgorithm().getName()));
                         toServer.writeObject(maze);
                         toServer.flush();
                         Solution mazeSolution = (Solution) fromServer.readObject();
+                        SERVER_LOG.info(String.format("Found solution of size [%d]", mazeSolution.getSolutionPath().size()));
                         System.out.println(String.format("Solution steps: %s", mazeSolution));
                         mazeSolutionSteps = mazeSolution.getSolutionPath();
 
@@ -245,9 +254,9 @@ public class MyModel extends Observable implements IModel {
             updateSolution(newRow, newCol);
 
             // Update direction
-            if(newCol > characterPositionColumn)
+            if (newCol > characterPositionColumn)
                 characterDirection = 1;
-            if(newCol < characterPositionColumn)
+            if (newCol < characterPositionColumn)
                 characterDirection = -1;
 
             // Update position
@@ -299,7 +308,7 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public void openFile(File file) {
-        if(file == null)
+        if (file == null)
             return;
 
         LOG.info("Opening file - " + file.getPath());
