@@ -21,10 +21,9 @@
 <BorderPane fx:id="board" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" onMouseDragged="#mouseMove" onMousePressed="#mousePress" onMouseReleased="#mouseRelease" prefHeight="900.0" prefWidth="900.0" style="-fx-background-color: #111111;" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MyViewController">
     <center>
         <StackPane fx:id="mazeWrapper">
-            <MazeDisplayer fx:id="mazeDisplayer" height="680.0" imageFileNameCharacter="resources/Images/dave.png" imageFileNameGoal="resources/Images/door.png" imageFileNameSolution="resources/Images/diamond.png" imageFileNameWall="resources/Images/redTile.png" onScroll="#onScroll" width="680.0" BorderPane.alignment="CENTER" />
+            <MazeDisplayer fx:id="mazeDisplayer" height="680.0" imageFileNameCharacter="/Images/dave.png" imageFileNameGoal="/Images/door.png" imageFileNameSolution="/Images/diamond.png" imageFileNameWall="/Images/redTile.png" onScroll="#onScroll" width="680.0" BorderPane.alignment="CENTER" />
 
             <ImageView fx:id="victoryScreen" fitHeight="680.0" fitWidth="680.0" pickOnBounds="true" preserveRatio="true" visible="false">
-                <Image url="images/youWin.gif" />
             </ImageView>
         </StackPane>
     </center>

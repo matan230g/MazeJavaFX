@@ -9,7 +9,7 @@ import IO.MyDecompressorInputStream;
 import Server.Server;
 import Server.Configurations;
 import algorithms.mazeGenerators.Maze;
-import algorithms.mazeGenerators.MyMazeGenerator;
+
 import algorithms.mazeGenerators.Position;
 import algorithms.search.AState;
 import algorithms.search.MazeState;
@@ -18,18 +18,17 @@ import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import test.RunCommunicateWithServers;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.Observable;
-import java.util.Random;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
 
 /**
  * Created by Aviadjo on 6/14/2017.

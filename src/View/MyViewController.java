@@ -21,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 
@@ -61,6 +62,7 @@ public class MyViewController implements Observer {
     public TimerLabel timer;
     public javafx.scene.control.MenuItem menuItem_save;
     public MediaPlayer mediaPlayer;
+
     private int num_click;
 
     //Properties - For Binding
@@ -201,6 +203,9 @@ public class MyViewController implements Observer {
         LOG.info("Displaying 'About' window");
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/aboutBox.fxml"));
         popABox(root);
+        ImageView image = (ImageView) root.lookup("#dave_image");
+        image.setImage(new Image(getClass().getResourceAsStream("/Images/dave.png")));
+
     }
 
     public void properties(ActionEvent event) throws Exception {
@@ -236,6 +241,7 @@ public class MyViewController implements Observer {
 //        lbl_rowsNum.textProperty().bind(this.characterPositionRow);
 //        lbl_columnsNum.textProperty().bind(this.characterPositionColumn);
         BooleanProperty muteProperty = new SimpleBooleanProperty(Configurations.prop.getProperty("mute").equals("true"));
+        victoryScreen.setImage(new Image(getClass().getResourceAsStream("/Images/youWin.gif")));
         muteProperty.addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();

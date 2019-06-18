@@ -9,14 +9,6 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
-    private static Stage primaryStage; // **Declare static Stage**
-    private void setPrimaryStage(Stage stage) {
-        Main.primaryStage = stage;
-    }
-
-    static public Stage getPrimaryStage() {
-        return Main.primaryStage;
-    }
     @Override
     public void start(Stage primaryStage) throws Exception{
         MyModel model = new MyModel();
@@ -25,7 +17,6 @@ public class Main extends Application {
         MyViewModel viewModel = new MyViewModel(model);
         model.addObserver(viewModel);
         Parent root = fxmlLoader.load(getClass().getResource("/fxml/MyView.fxml").openStream());
-        setPrimaryStage(primaryStage);
         Scene scene=new Scene(root, 900, 900);
         scene.getStylesheets().add("/css/MainStyle.css");
         primaryStage.setScene(scene);
