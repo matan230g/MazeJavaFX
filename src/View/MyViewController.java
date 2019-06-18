@@ -145,7 +145,8 @@ public class MyViewController implements Observer {
         this.characterPositionColumn.set(characterPositionColumn + "");
         btn_solveMaze.setDisable(false);
         menuItem_save.setDisable(false);
-        if (viewModel.isFinished()) {
+        if (viewModel.isFinished() && timer.isRunning()) {
+            LOG.info("Finished current maze! Time spent: " + timer.getTimeString() + " minutes");
             playMusic("resources/winSound.mp3", false, false);
             timer.stop();
             victoryScreen.setVisible(true);
@@ -153,7 +154,7 @@ public class MyViewController implements Observer {
     }
 
     private void playMusic(String path, boolean loop, boolean mutable) {
-        String mute_off=Configurations.prop.getProperty("mute");
+        String mute_off = Configurations.prop.getProperty("mute");
         Media sound = new Media(new File(path).toURI().toString());
         if (mediaPlayer != null)
             mediaPlayer.stop();
@@ -161,7 +162,7 @@ public class MyViewController implements Observer {
         mediaPlayer = new MediaPlayer(sound);
         if (loop)
             mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
-        if(mutable)
+        if (mutable)
             mediaPlayer.setMute(mute_off.equals("true"));
         mediaPlayer.play();
     }
@@ -197,17 +198,19 @@ public class MyViewController implements Observer {
     }
 
     public void about(ActionEvent event) throws Exception {
+        LOG.info("Displaying 'About' window");
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/aboutBox.fxml"));
         popABox(root);
     }
 
     public void properties(ActionEvent event) throws Exception {
+        LOG.info("Displaying 'Properties' window");
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Properties.fxml"));
         Stage box = popABox(root, 600, 400);
         box.setOnHiding(e -> {
-            String mute_off=Configurations.prop.getProperty("mute");
+            String mute_off = Configurations.prop.getProperty("mute");
 
-            if(mediaPlayer != null)
+            if (mediaPlayer != null)
                 mediaPlayer.setMute(mute_off.equals("true"));
         });
     }
@@ -215,7 +218,6 @@ public class MyViewController implements Observer {
 
     private void popABox(Parent root) {
         popABox(root, 400, 250);
-
     }
 
     private Stage popABox(Parent root, double width, double height) {
@@ -233,9 +235,11 @@ public class MyViewController implements Observer {
     private void bindProperties() {
 //        lbl_rowsNum.textProperty().bind(this.characterPositionRow);
 //        lbl_columnsNum.textProperty().bind(this.characterPositionColumn);
-        BooleanProperty muteProperty= new SimpleBooleanProperty(Configurations.prop.getProperty("mute").equals("true"));
+        BooleanProperty muteProperty = new SimpleBooleanProperty(Configurations.prop.getProperty("mute").equals("true"));
         muteProperty.addListener((observable, oldValue, newValue) -> {
-           if(mediaPlayer!=null){mediaPlayer.stop();}
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
         });
         txtfld_columnsNum.textProperty().addListener((observable, oldValue, newValue) -> {
             validCols = newValue.length() > 0;
@@ -270,12 +274,13 @@ public class MyViewController implements Observer {
             timer.start();
             victoryScreen.setVisible(false);
         } else {
+            LOG.error("Invalid maze size was requested - showing alert dialog");
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.initStyle(StageStyle.UNDECORATED);
             alert.setContentText("Wrong input, maze size between 3 to 100");
             DialogPane dialogPane = alert.getDialogPane();
             dialogPane.getStylesheets().add(
-                    getClass().getResource("MainStyle.css").toExternalForm());
+                    getClass().getResource("/css/MainStyle.css").toExternalForm());
             dialogPane.getStyleClass().add("myDialog");
             alert.showAndWait();
         }
@@ -303,8 +308,10 @@ public class MyViewController implements Observer {
 
     public void solveMaze(ActionEvent event) {
         if (viewModel.getSolution() != null) {
+            LOG.info("Hiding solution");
             resetSolution();
         } else {
+            LOG.info("Solution requested");
             viewModel.solveMaze();
             btn_solveMaze.setText("Hide Solution");
         }
@@ -343,18 +350,17 @@ public class MyViewController implements Observer {
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser;
     }
+
     public void backDoor() {
         num_click++;
-        if(num_click==5) {
+        if (num_click == 5) {
             try {
                 Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start chrome  --kiosk https://www.playdosgames.com/play/dangerous-dave/"});
-                num_click=0;
+                num_click = 0;
             } catch (IOException e) {
                 LOG.catching(e);
             }
         }
-
-
     }
 
     public void onScroll(ScrollEvent scrollEvent) {
@@ -386,12 +392,13 @@ public class MyViewController implements Observer {
         Position mousePos = mazeDisplayer.projectClickToTile(x, y);
         boolean isDragActive = viewModel.mouseMove(mousePos);
 
-        if(isDragActive)
+        if (isDragActive)
             updateDisplayAfterMove();
     }
-    public void openHelp()throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/help.fxml"));
-        popABox(root,600,400);
 
+    public void openHelp() throws Exception {
+        LOG.info("Displaying 'Help' window");
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/help.fxml"));
+        popABox(root, 600, 400);
     }
 }

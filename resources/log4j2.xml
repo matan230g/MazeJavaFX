@@ -4,7 +4,10 @@
         <Console name="ConsoleLog" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} - %-5level - %logger{36} - %msg%n" />
         </Console>
-        <File name="FileLog" fileName="logs/atp_gui.log" immediateFlush="false" append="false">
+        <File name="FileLog" fileName="logs/atp_gui.log" immediateFlush="true" append="false">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} - %-5level - %logger{36} - %msg%n"/>
+        </File>
+        <File name="ServerFileLog" fileName="logs/atp_server.log" immediateFlush="true" append="false">
             <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} - %-5level - %logger{36} - %msg%n"/>
         </File>
     </Appenders>
@@ -13,5 +16,8 @@
             <AppenderRef ref="ConsoleLog" />
             <AppenderRef ref="FileLog"/>
         </Root>
+        <Logger name="ServerLog" level="debug">
+            <AppenderRef ref="ServerFileLog"/>
+        </Logger>
     </Loggers>
 </Configuration>
