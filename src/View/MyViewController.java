@@ -416,5 +416,7 @@ public class MyViewController implements Observer {
         LOG.info("Displaying 'Help' window");
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/help.fxml"));
         popABox(root, 600, 400);
+        ImageView image = (ImageView) root.lookup("#num_pad");
+        image.setImage(new Image(getClass().getResourceAsStream("/Images/numeric_keypad.gif")));
     }
 }

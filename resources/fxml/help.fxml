@@ -17,10 +17,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ImageView fitHeight="221.0" fitWidth="236.0" layoutX="383.0" layoutY="74.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="images/numeric_keypad.gif" />
-                           </image>
+                        <ImageView fx:id="num_pad" fitHeight="221.0" fitWidth="236.0" layoutX="383.0" layoutY="74.0" pickOnBounds="true" preserveRatio="true">
                         </ImageView>
                         <TextArea editable="false" layoutX="-3.0" layoutY="8.0" prefHeight="339.0" prefWidth="376.0" stylesheets="@../css/MainStyle.css" text="To move the player right press 6&#10;to move the player left press 4&#10;to move the player up press 8&#10;to move the player down press 2&#10;to move diagonal movement up and right press 9&#10;to move diagonal movement up and left press 7&#10;to move diagonal movement down and left press 1&#10;to move diagonal movement down and right press 3&#10;zoom in/out with the Mouse wheel up/down and Ctrl&#10;&#10;">
                            <cursor>
