@@ -13,11 +13,17 @@ public class TimerLabel extends Label implements ActionListener {
     Timer timer;
 
     public TimerLabel() {
-        this.setText("0:00");
+        updateText();
         this.setAlignment(Pos.CENTER);
         this.setStyle(" -fx-text-fill: #00ff00; -fx-font-family: Consolas;");
 
         timer = new Timer(1000, this);
+    }
+
+
+    public void reset() {
+        seconds = 0;
+        updateText();
     }
 
     public void start() {
@@ -32,7 +38,11 @@ public class TimerLabel extends Label implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         seconds++;
-        Platform.runLater(() -> TimerLabel.this.setText(getTimeString()));
+        Platform.runLater(this::updateText);
+    }
+
+    private void updateText() {
+        TimerLabel.this.setText(getTimeString());
     }
 
     public String getTimeString() {

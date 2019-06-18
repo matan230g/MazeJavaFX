@@ -134,6 +134,9 @@ public class MyViewController implements Observer {
     public void newFile() {
         mazeDisplayer.cleanDraw();
         timer.stop();
+        timer.reset();
+        victoryScreen.setVisible(false);
+        mazeDisplayer.setMaze(null);
         btn_solveMaze.setDisable(true);
         menuItem_save.setDisable(true);
     }
@@ -159,7 +162,6 @@ public class MyViewController implements Observer {
     private void playMusic(String path, boolean loop, boolean mutable) {
         String mute_off = Configurations.prop.getProperty("mute");
         Media sound;
-
         if (mediaPlayer != null)
             mediaPlayer.stop();
 
