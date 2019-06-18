@@ -43,6 +43,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -149,7 +150,7 @@ public class MyViewController implements Observer {
         menuItem_save.setDisable(false);
         if (viewModel.isFinished() && timer.isRunning()) {
             LOG.info("Finished current maze! Time spent: " + timer.getTimeString() + " minutes");
-            playMusic("resources/winSound.mp3", false, false);
+            playMusic("/winSound.mp3", false, false);
             timer.stop();
             victoryScreen.setVisible(true);
         }
@@ -157,16 +158,23 @@ public class MyViewController implements Observer {
 
     private void playMusic(String path, boolean loop, boolean mutable) {
         String mute_off = Configurations.prop.getProperty("mute");
-        Media sound = new Media(new File(path).toURI().toString());
+        Media sound;
+
         if (mediaPlayer != null)
             mediaPlayer.stop();
 
-        mediaPlayer = new MediaPlayer(sound);
-        if (loop)
-            mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
-        if (mutable)
-            mediaPlayer.setMute(mute_off.equals("true"));
-        mediaPlayer.play();
+        try {
+            sound = new Media(getClass().getResource(path).toURI().toString());
+
+            mediaPlayer = new MediaPlayer(sound);
+            if (loop)
+                mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
+            if (mutable)
+                mediaPlayer.setMute(mute_off.equals("true"));
+            mediaPlayer.play();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -276,7 +284,7 @@ public class MyViewController implements Observer {
             resetSolution();
             mazeDisplayer.redraw();
 
-            playMusic("resources/backgroundMusic.mp3", true, true);
+            playMusic("/backgroundMusic.mp3", true, true);
             timer.start();
             victoryScreen.setVisible(false);
         } else {
