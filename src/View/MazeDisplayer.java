@@ -49,15 +49,11 @@ public class MazeDisplayer extends Canvas {
     }
 
     private void loadAssets() {
-        try {
-            characterImage = new Image(new FileInputStream(ImageFileNameCharacter.get()));
-            wallImage = new Image(new FileInputStream(ImageFileNameWall.get()));
-            solutionImage = new Image(new FileInputStream(imageFileNameSolution.get()));
-            goalImage = new Image(new FileInputStream(ImageFileNameGoal.get()));
-            assetsLoaded = true;
-        } catch (FileNotFoundException e) {
-            LOG.catching(e);
-        }
+        characterImage = new Image(getClass().getResourceAsStream(ImageFileNameCharacter.get()));
+        wallImage = new Image(getClass().getResourceAsStream(ImageFileNameWall.get()));
+        solutionImage = new Image(getClass().getResourceAsStream(imageFileNameSolution.get()));
+        goalImage = new Image(getClass().getResourceAsStream(ImageFileNameGoal.get()));
+        assetsLoaded = true;
     }
 
     public void setMaze(int[][] maze) {
